@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Pedido - Cosmofood</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff6b35',
+                        secondary: '#2c3e50',
+                        accent: '#f39c12',
+                        success: '#27ae60',
+                        danger: '#e74c3c'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .checkout-step {
+            transition: all 0.3s ease;
+        }
+        .checkout-step.active {
+            background: linear-gradient(45deg, #ff6b35, #f39c12);
+            color: white;
+        }
+        .checkout-step.completed {
+            background: #27ae60;
+            color: white;
+        }
+        .payment-method {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .payment-method:hover {
+            border-color: #ff6b35;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.1);
+        }
+        .payment-method.selected {
+            border-color: #ff6b35;
+            background: rgba(255, 107, 53, 0.1);
+        }
+        .btn-place-order {
+            background: linear-gradient(45deg, #ff6b35, #f39c12);
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+        }
+        .btn-place-order:hover {
+            background: linear-gradient(45deg, #e55a2e, #d68910);
+            transform: translateY(-2px);
+        }
+        .order-summary-card {
+            position: sticky;
+            top: 100px;
+        }
+        .navbar-brand {
+            color: #ff6b35 !important;
+        }
+        .security-badge {
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(39, 174, 96, 0.2));
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html">
+                <i class="fas fa-utensils me-2"></i>Cosmofood
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-muted">
+                    <i class="fas fa-lock me-1"></i>Checkout Seguro
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Checkout Progress -->
+    <section class="bg-white py-3 border-bottom">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="checkout-step active rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <span class="fw-bold">1</span>
+                        </div>
+                        <div class="flex-grow-1 mx-2">
+                            <hr class="my-0">
+                        </div>
+                        <div class="checkout-step rounded-circle d-flex align-items-center justify-content-center bg-light" style="width: 40px; height: 40px;">
+                            <span class="fw-bold">2</span>
+                        </div>
+                        <div class="flex-grow-1 mx-2">
+                            <hr class="my-0">
+                        </div>
+                        <div class="checkout-step rounded-circle d-flex align-items-center justify-content-center bg-light" style="width: 40px; height: 40px;">
+                            <span class="fw-bold">3</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <small class="text-primary fw-semibold">Información</small>
+                        <small class="text-muted">Pago</small>
+                        <small class="text-muted">Confirmación</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Checkout Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Checkout Form -->
+                <div class="col-lg-8">
+                    <!-- Step 1: Delivery Information -->
+                    <div class="card border-0 shadow-sm mb-4" id="step1">
+                        <div class="card-header bg-primary text-white border-0">
+                            <h5 class="mb-0">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                Información de Entrega
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="deliveryForm" class="needs-validation" novalidate>
+                                <!-- Delivery Type -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Tipo de Entrega</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="payment-method p-3 text-center mb-2" onclick="selectDeliveryType('delivery')">
+                                                <input type="radio" name="deliveryType" value="delivery" id="deliveryOption" checked hidden>
+                                                <i class="fas fa-truck fa-2x text-primary mb-2"></i>
+                                                <h6>Delivery</h6>
+                                                <small class="text-muted">Entrega a domicilio (25-35 min)</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="payment-method p-3 text-center mb-2" onclick="selectDeliveryType('pickup')">
+                                                <input type="radio" name="deliveryType" value="pickup" id="pickupOption" hidden>
+                                                <i class="fas fa-shopping-bag fa-2x text-success mb-2"></i>
+                                                <h6>Retiro en Local</h6>
+                                                <small class="text-muted">Listo en 15-20 min</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Delivery Address (shown only for delivery) -->
+                                <div id="deliveryAddressSection">
+                                    <h6 class="mb-3">Dirección de Entrega</h6>
+                                    <div class="row">
+                                        <div class="col-md-8 mb-3">
+                                            <label for="address" class="form-label">Dirección Completa</label>
+                                            <input type="text" class="form-control" id="address" placeholder="Calle, número, depto/casa" required>
+                                            <div class="invalid-feedback">Por favor ingresa tu dirección</div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="commune" class="form-label">Comuna</label>
+                                            <select class="form-select" id="commune" required>
+                                                <option value="">Seleccionar</option>
+                                                <option value="valdivia" selected>Valdivia</option>
+                                                <option value="las-animas">Las Ánimas</option>
+                                                <option value="niebla">Niebla</option>
+                                            </select>
+                                            <div class="invalid-feedback">Selecciona tu comuna</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="reference" class="form-label">Referencia (Opcional)</label>
+                                            <input type="text" class="form-control" id="reference" placeholder="Casa azul, portón negro, etc.">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="phone" class="form-label">Teléfono de Contacto</label>
+                                            <input type="tel" class="form-control" id="phone" placeholder="+56 9 1234 5678" required>
+                                            <div class="invalid-feedback">Ingresa un teléfono válido</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pickup Info (shown only for pickup) -->
+                                <div id="pickupInfoSection" style="display: none;">
+                                    <div class="alert alert-info border-0">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-info-circle fa-2x me-3"></i>
+                                            <div>
+                                                <h6 class="mb-1">Información de Retiro</h6>
+                                                <p class="mb-1"><strong>Dirección:</strong> Av. Pedro Montt 123, Valdivia</p>
+                                                <p class="mb-1"><strong>Horario:</strong> Lunes a Domingo 11:00 - 23:00</p>
+                                                <p class="mb-0"><strong>Teléfono:</strong> +56 63 221 3456</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="pickupPhone" class="form-label">Teléfono de Contacto</label>
+                                        <input type="tel" class="form-control" id="pickupPhone" placeholder="+56 9 1234 5678">
+                                    </div>
+                                </div>
+
+                                <!-- Delivery Time -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Horario de Entrega</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="payment-method p-3" onclick="selectDeliveryTime('asap')">
+                                                <input type="radio" name="deliveryTime" value="asap" id="asapOption" checked hidden>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-clock text-primary me-3"></i>
+                                                    <div>
+                                                        <h6 class="mb-0">Lo antes posible</h6>
+                                                        <small class="text-muted" id="asapTime">25-35 minutos</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="payment-method p-3" onclick="selectDeliveryTime('scheduled')">
+                                                <input type="radio" name="deliveryTime" value="scheduled" id="scheduledOption" hidden>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-calendar text-warning me-3"></i>
+                                                    <div>
+                                                        <h6 class="mb-0">Programar entrega</h6>
+                                                        <small class="text-muted">Seleccionar fecha y hora</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="scheduledTimeSection" class="mt-3" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="scheduledDate" class="form-label">Fecha</label>
+                                                <input type="date" class="form-control" id="scheduledDate">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="scheduledTime" class="form-label">Hora</label>
+                                                <select class="form-select" id="scheduledTime">
+                                                    <option value="">Seleccionar hora</option>
+                                                    <option value="12:00">12:00</option>
+                                                    <option value="12:30">12:30</option>
+                                                    <option value="13:00">13:00</option>
+                                                    <option value="13:30">13:30</option>
+                                                    <option value="14:00">14:00</option>
+                                                    <option value="19:00">19:00</option>
+                                                    <option value="19:30">19:30</option>
+                                                    <option value="20:00">20:00</option>
+                                                    <option value="20:30">20:30</option>
+                                                    <option value="21:00">21:00</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-primary" onclick="proceedToPayment()">
+                                        Continuar al Pago
+                                        <i class="fas fa-arrow-right ms-2"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Payment Information -->
+                    <div class="card border-0 shadow-sm mb-4" id="step2" style="display: none;">
+                        <div class="card-header bg-primary text-white border-0">
+                            <h5 class="mb-0">
+                                <i class="fas fa-credit-card me-2"></i>
+                                Método de Pago
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Payment Methods -->
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <div class="payment-method p-3" onclick="selectPaymentMethod('card')">
+                                        <input type="radio" name="paymentMethod" value="card" id="cardOption" checked hidden>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-credit-card fa-2x text-primary me-3"></i>
+                                            <div>
+                                                <h6 class="mb-0">Tarjeta</h6>
+                                                <small class="text-muted">Crédito o Débito</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="payment-method p-3" onclick="selectPaymentMethod('cash')">
+                                        <input type="radio" name="paymentMethod" value="cash" id="cashOption" hidden>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-money-bill-wave fa-2x text-success me-3"></i>
+                                            <div>
+                                                <h6 class="mb-0">Efectivo</h6>
+                                                <small class="text-muted">Pago contra entrega</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Payment Form -->
+                            <div id="cardPaymentSection">
+                                <form id="paymentForm" class="needs-validation" novalidate>
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="cardNumber" class="form-label">Número de Tarjeta</label>
+                                            <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                            <div class="invalid-feedback">Ingresa un número de tarjeta válido</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8 mb-3">
+                                            <label for="cardName" class="form-label">Nombre en la Tarjeta</label>
+                                            <input type="text" class="form-control" id="cardName" placeholder="Juan Pérez" required>
+                                            <div class="invalid-feedback">Ingresa el nombre como aparece en la tarjeta</div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="cardExpiry" class="form-label">Vencimiento</label>
+                                            <input type="text" class="form-control" id="cardExpiry" placeholder="MM/AA" maxlength="5" required>
+                                            <div class="invalid-feedback">Formato: MM/AA</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="cardCvv" class="form-label">CVV</label>
+                                            <input type="text" class="form-control" id="cardCvv" placeholder="123" maxlength="4" required>
+                                            <div class="invalid-feedback">Código de 3 dígitos</div>
+                                        </div>
+                                        <div class="col-md-8 mb-3">
+                                            <div class="security-badge p-3 h-100 d-flex align-items-center">
+                                                <i class="fas fa-shield-alt text-success me-2"></i>
+                                                <small>Tu información está protegida con encriptación SSL</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Cash Payment Info -->
+                            <div id="cashPaymentSection" style="display: none;">
+                                <div class="alert alert-warning border-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-money-bill-wave fa-2x me-3"></i>
+                                        <div>
+                                            <h6 class="mb-1">Pago en Efectivo</h6>
+                                            <p class="mb-1">El pago se realizará contra entrega</p>
+                                            <small class="text-muted">Asegúrate de tener el monto exacto o cambio disponible</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cashAmount" class="form-label">¿Con cuánto vas a pagar? (Opcional)</label>
+                                    <input type="number" class="form-control" id="cashAmount" placeholder="Ejemplo: 20000">
+                                    <small class="text-muted">Esto nos ayuda a preparar el cambio</small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" onclick="backToDelivery()">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    Volver
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="proceedToConfirmation()">
+                                    Revisar Pedido
+                                    <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Order Confirmation -->
+                    <div class="card border-0 shadow-sm mb-4" id="step3" style="display: none;">
+                        <div class="card-header bg-primary text-white border-0">
+                            <h5 class="mb-0">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Confirmar Pedido
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Order Summary -->
+                            <div id="finalOrderSummary">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+
+                            <!-- Terms and Conditions -->
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="acceptTerms" required>
+                                <label class="form-check-label" for="acceptTerms">
+                                    Acepto los <a href="#" class="text-primary">términos y condiciones</a> y la <a href="#" class="text-primary">política de privacidad</a>
+                                </label>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" onclick="backToPayment()">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    Volver
+                                </button>
+                                <button type="button" class="btn btn-place-order text-white" onclick="placeOrder()">
+                                    <i class="fas fa-shopping-cart me-2"></i>
+                                    Confirmar Pedido
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary Sidebar -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm order-summary-card">
+                        <div class="card-header bg-light border-0">
+                            <h5 class="mb-0">
+                                <i class="fas fa-receipt me-2"></i>
+                                Resumen del Pedido
+                            </h5>
+                        </div>
+                        <div class="card-body" id="orderSummaryContent">
+                            <!-- Order items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h3 class="text-success mb-3">¡Pedido Confirmado!</h3>
+                    <p class="text-muted mb-4">Tu pedido <strong>#<span id="orderNumber">12345</span></strong> ha sido recibido exitosamente.</p>
+                    <div class="alert alert-info border-0 mb-4">
+                        <div class="mb-2">
+                            <strong>Tiempo estimado:</strong> <span id="estimatedTime">25-35 minutos</span>
+                        </div>
+                        <div>
+                            <strong>Total pagado:</strong> <span id="totalPaid">$0</span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="catalog.html" class="btn btn-outline-primary">
+                            <i class="fas fa-utensils me-2"></i>
+                            Seguir Comprando
+                        </a>
+                        <a href="profile.html" class="btn btn-primary">
+                            <i class="fas fa-history me-2"></i>
+                            Ver Mis Pedidos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let checkoutData = {};
+        let currentStep = 1;
+
+        // Initialize checkout
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCheckoutData();
+            loadOrderSummary();
+            initializeFormValidation();
+            setDefaultDateTime();
+        });
+
+        function loadCheckoutData() {
+            const data = sessionStorage.getItem('cosmofood_checkout');
+            if (!data) {
+                window.location.href = 'cart.html';
+                return;
+            }
+            checkoutData = JSON.parse(data);
+        }
+
+        function loadOrderSummary() {
+            const container = document.getElementById('orderSummaryContent');
+            const items = checkoutData.items || [];
+            
+            let subtotal = 0;
+            let itemsHtml = '<div class="mb-3">';
+            
+            items.forEach(item => {
+                subtotal += item.total;
+                itemsHtml += `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-0">${item.name}</h6>
+                            <small class="text-muted">$${item.price.toLocaleString()} x ${item.quantity}</small>
+                        </div>
+                        <span class="fw-bold">$${item.total.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+            
+            itemsHtml += '</div>';
+            
+            const deliveryFee = subtotal >= 15000 ? 0 : 2990;
+            let discount = 0;
+            
+            if (checkoutData.coupon) {
+                if (checkoutData.coupon.type === 'percentage') {
+                    discount = subtotal * checkoutData.coupon.discount;
+                } else {
+                    discount = checkoutData.coupon.discount;
+                }
+            }
+            
+            const total = subtotal + deliveryFee - discount;
+            
+            let summaryHtml = itemsHtml + `
+                <div class="border-top pt-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span>$${subtotal.toLocaleString()}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Delivery</span>
+                        <span>${deliveryFee === 0 ? 'GRATIS' : '$' + deliveryFee.toLocaleString()}</span>
+                    </div>
+            `;
+            
+            if (discount > 0) {
+                summaryHtml += `
+                    <div class="d-flex justify-content-between mb-2 text-success">
+                        <span>Descuento</span>
+                        <span>-$${discount.toLocaleString()}</span>
+                    </div>
+                `;
+            }
+            
+            summaryHtml += `
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Total</span>
+                        <span class="text-primary">$${total.toLocaleString()}</span>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = summaryHtml;
+        }
+
+        function setDefaultDateTime() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('scheduledDate').min = tomorrow.toISOString().split('T')[0];
+            document.getElementById('scheduledDate').value = tomorrow.toISOString().split('T')[0];
+        }
+
+        function selectDeliveryType(type) {
+            document.querySelectorAll('[name="deliveryType"]').forEach(radio => {
+                radio.closest('.payment-method').classList.remove('selected');
+            });
+            
+            const option = document.getElementById(type + 'Option');
+            option.checked = true;
+            option.closest('.payment-method').classList.add('selected');
+            
+            if (type === 'delivery') {
+                document.getElementById('deliveryAddressSection').style.display = 'block';
+                document.getElementById('pickupInfoSection').style.display = 'none';
+                document.getElementById('asapTime').textContent = '25-35 minutos';
+            } else {
+                document.getElementById('deliveryAddressSection').style.display = 'none';
+                document.getElementById('pickupInfoSection').style.display = 'block';
+                document.getElementById('asapTime').textContent = '15-20 minutos';
+            }
+        }
+
+        function selectDeliveryTime(type) {
+            document.querySelectorAll('[name="deliveryTime"]').forEach(radio => {
+                radio.closest('.payment-method').classList.remove('selected');
+            });
+            
+            const option = document.getElementById(type + 'Option');
+            option.checked = true;
+            option.closest('.payment-method').classList.add('selected');
+            
+            if (type === 'scheduled') {
+                document.getElementById('scheduledTimeSection').style.display = 'block';
+            } else {
+                document.getElementById('scheduledTimeSection').style.display = 'none';
+            }
+        }
+
+        function selectPaymentMethod(method) {
+            document.querySelectorAll('[name="paymentMethod"]').forEach(radio => {
+                radio.closest('.payment-method').classList.remove('selected');
+            });
+            
+            const option = document.getElementById(method + 'Option');
+            option.checked = true;
+            option.closest('.payment-method').classList.add('selected');
+            
+            if (method === 'card') {
+                document.getElementById('cardPaymentSection').style.display = 'block';
+                document.getElementById('cashPaymentSection').style.display = 'none';
+            } else {
+                document.getElementById('cardPaymentSection').style.display = 'none';
+                document.getElementById('cashPaymentSection').style.display = 'block';
+            }
+        }
+
+        function proceedToPayment() {
+            const form = document.getElementById('deliveryForm');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            // Update progress
+            updateStep(2);
+            
+            // Initialize payment method selection
+            selectPaymentMethod('card');
+        }
+
+        function proceedToConfirmation() {
+            const paymentMethod = document.querySelector('[name="paymentMethod"]:checked').value;
+            
+            if (paymentMethod === 'card') {
+                const form = document.getElementById('paymentForm');
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    return;
+                }
+            }
+
+            // Generate final order summary
+            generateFinalSummary();
+            
+            // Update progress
+            updateStep(3);
+        }
+
+        function backToDelivery() {
+            updateStep(1);
+        }
+
+        function backToPayment() {
+            updateStep(2);
+        }
+
+        function updateStep(step) {
+            // Hide all steps
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            
+            // Show current step
+            document.getElementById('step' + step).style.display = 'block';
+            
+            // Update progress indicators
+            document.querySelectorAll('.checkout-step').forEach((stepEl, index) => {
+                stepEl.classList.remove('active', 'completed');
+                if (index + 1 < step) {
+                    stepEl.classList.add('completed');
+                } else if (index + 1 === step) {
+                    stepEl.classList.add('active');
+                } else {
+                    stepEl.className = 'checkout-step rounded-circle d-flex align-items-center justify-content-center bg-light';
+                }
+            });
+            
+            currentStep = step;
+        }
+
+        function generateFinalSummary() {
+            const deliveryType = document.querySelector('[name="deliveryType"]:checked').value;
+            const deliveryTime = document.querySelector('[name="deliveryTime"]:checked').value;
+            const paymentMethod = document.querySelector('[name="paymentMethod"]:checked').value;
+            
+            let summaryHtml = '<div class="mb-4">';
+            
+            // Delivery Information
+            summaryHtml += '<h6 class="mb-3">Información de Entrega</h6>';
+            if (deliveryType === 'delivery') {
+                const address = document.getElementById('address').value;
+                const commune = document.getElementById('commune').value;
+                const phone = document.getElementById('phone').value;
+                summaryHtml += `
+                    <p class="mb-1"><strong>Tipo:</strong> Delivery a domicilio</p>
+                    <p class="mb-1"><strong>Dirección:</strong> ${address}, ${commune}</p>
+                    <p class="mb-1"><strong>Teléfono:</strong> ${phone}</p>
+                `;
+            } else {
+                summaryHtml += `
+                    <p class="mb-1"><strong>Tipo:</strong> Retiro en local</p>
+                    <p class="mb-1"><strong>Dirección:</strong> Av. Pedro Montt 123, Valdivia</p>
+                `;
+            }
+            
+            if (deliveryTime === 'asap') {
+                summaryHtml += `<p class="mb-1"><strong>Horario:</strong> Lo antes posible</p>`;
+            } else {
+                const date = document.getElementById('scheduledDate').value;
+                const time = document.getElementById('scheduledTime').value;
+                summaryHtml += `<p class="mb-1"><strong>Horario:</strong> ${date} a las ${time}</p>`;
+            }
+            
+            summaryHtml += '</div>';
+            
+            // Payment Information
+            summaryHtml += '<h6 class="mb-3">Método de Pago</h6>';
+            if (paymentMethod === 'card') {
+                const cardNumber = document.getElementById('cardNumber').value;
+                const maskedCard = '**** **** **** ' + cardNumber.slice(-4);
+                summaryHtml += `<p class="mb-3"><strong>Tarjeta:</strong> ${maskedCard}</p>`;
+            } else {
+                summaryHtml += `<p class="mb-3"><strong>Pago:</strong> Efectivo contra entrega</p>`;
+            }
+            
+            document.getElementById('finalOrderSummary').innerHTML = summaryHtml;
+        }
+
+        function placeOrder() {
+            const termsAccepted = document.getElementById('acceptTerms').checked;
+            if (!termsAccepted) {
+                alert('Debes aceptar los términos y condiciones para continuar');
+                return;
+            }
+
+            // Simulate order processing
+            const orderNumber = Math.floor(Math.random() * 90000) + 10000;
+            const total = calculateTotal();
+            const deliveryType = document.querySelector('[name="deliveryType"]:checked').value;
+            const estimatedTime = deliveryType === 'delivery' ? '25-35 minutos' : '15-20 minutos';
+            
+            // Update success modal
+            document.getElementById('orderNumber').textContent = orderNumber;
+            document.getElementById('totalPaid').textContent = ' + total.toLocaleString();
+            document.getElementById('estimatedTime').textContent = estimatedTime;
+            
+            // Clear cart and checkout data
+            localStorage.removeItem('cosmofood_cart');
+            sessionStorage.removeItem('cosmofood_checkout');
+            
+            // Store order in history (simulation)
+            const orderHistory = JSON.parse(localStorage.getItem('cosmofood_orders')) || [];
+            orderHistory.push({
+                id: orderNumber,
+                items: checkoutData.items,
+                total: total,
+                date: new Date().toISOString(),
+                status: 'confirmed'
+            });
+            localStorage.setItem('cosmofood_orders', JSON.stringify(orderHistory));
+            
+            // Show success modal
+            const modal = new bootstrap.Modal(document.getElementById('successModal'));
+            modal.show();
+        }
+
+        function calculateTotal() {
+            const items = checkoutData.items || [];
+            let subtotal = items.reduce((sum, item) => sum + item.total, 0);
+            const deliveryFee = subtotal >= 15000 ? 0 : 2990;
+            let discount = 0;
+            
+            if (checkoutData.coupon) {
+                if (checkoutData.coupon.type === 'percentage') {
+                    discount = subtotal * checkoutData.coupon.discount;
+                } else {
+                    discount = checkoutData.coupon.discount;
+                }
+            }
+            
+            return subtotal + deliveryFee - discount;
+        }
+
+        function initializeFormValidation() {
+            // Card number formatting
+            document.getElementById('cardNumber').addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                this.value = value;
+            });
+
+            // Card expiry formatting
+            document.getElementById('cardExpiry').addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                this.value = value;
+            });
+
+            // CVV formatting
+            document.getElementById('cardCvv').addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+            });
+
+            // Phone formatting
+            const phoneInputs = ['phone', 'pickupPhone'];
+            phoneInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('input', function() {
+                        let value = this.value.replace(/\D/g, '');
+                        if (value.startsWith('56')) {
+                            value = '+' + value;
+                        } else if (value.startsWith('9') && value.length === 9) {
+                            value = '+56 ' + value;
+                        }
+                        if (value.startsWith('+56')) {
+                            value = value.replace(/(\+56)(\d{1})(\d{4})(\d{4})/, '$1 $2 $3 $4');
+                        }
+                        this.value = value;
+                    });
+                }
+            });
+        }
+
+        // Initialize default selections
+        selectDeliveryType('delivery');
+        selectDeliveryTime('asap');
+
+        console.log('%c💳 Checkout Cosmofood', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
+        console.log('Items en checkout:', checkoutData.items?.length || 0);
+        console.log('Total estimado:  + calculateTotal().toLocaleString());
+    </script>
+</body>
+</html>

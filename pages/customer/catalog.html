@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Cosmofood</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff6b35',
+                        secondary: '#2c3e50',
+                        accent: '#f39c12',
+                        success: '#27ae60',
+                        danger: '#e74c3c'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .product-card {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .product-image {
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(45deg, #ff6b35, #f39c12);
+        }
+        .cart-badge {
+            background: linear-gradient(45deg, #ff6b35, #f39c12);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .btn-add-cart {
+            background: linear-gradient(45deg, #ff6b35, #f39c12);
+            border: none;
+            border-radius: 25px;
+        }
+        .btn-add-cart:hover {
+            background: linear-gradient(45deg, #e55a2e, #d68910);
+            transform: translateY(-2px);
+        }
+        .category-btn.active {
+            background: linear-gradient(45deg, #ff6b35, #f39c12);
+            color: white;
+        }
+        .navbar-brand {
+            color: #ff6b35 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../../index.html">
+                <i class="fas fa-utensils me-2"></i>Cosmofood
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="catalog.html">
+                            <i class="fas fa-utensils me-1"></i>Menú
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">
+                            <i class="fas fa-user me-1"></i>Mi Perfil
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="position-relative d-none d-md-block">
+                        <input type="text" class="form-control" placeholder="Buscar productos..." id="searchInput" style="padding-right: 40px;">
+                        <i class="fas fa-search position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
+                    </div>
+                    
+                    <!-- Cart -->
+                    <a href="cart.html" class="btn btn-outline-primary position-relative">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill text-white" id="cartBadge">0</span>
+                    </a>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            <span id="userName">Cliente</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-2"></i>Mi Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-history me-2"></i>Mis Pedidos</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="../auth/login.html"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-orange-500 to-amber-400 text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-5 fw-bold mb-3">¡Deliciosa comida rápida!</h1>
+                    <p class="lead mb-4">Explora nuestro menú y disfruta de los mejores sabores de Valdivia</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <span class="badge bg-white text-primary px-3 py-2">🚚 Delivery gratis > $15.000</span>
+                        <span class="badge bg-white text-primary px-3 py-2">⏰ Entrega en 30 min</span>
+                        <span class="badge bg-white text-primary px-3 py-2">🔥 Productos frescos</span>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <div class="bg-white/20 backdrop-blur rounded-3 p-4">
+                        <h5 class="mb-3">🎉 Oferta del día</h5>
+                        <p class="mb-2">Combo Familiar</p>
+                        <h3 class="text-warning">$12.990</h3>
+                        <small>Ahorra $3.000</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories & Products -->
+    <section class="py-5">
+        <div class="container">
+            <!-- Categories Filter -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h3 class="mb-3">
+                        <i class="fas fa-th-large text-primary me-2"></i>
+                        Nuestro Menú
+                    </h3>
+                    <div class="d-flex gap-2 flex-wrap mb-4">
+                        <button class="btn category-btn active" data-category="all">
+                            <i class="fas fa-utensils me-1"></i>Todo
+                        </button>
+                        <button class="btn category-btn btn-outline-primary" data-category="hamburgers">
+                            <i class="fas fa-hamburger me-1"></i>Hamburguesas
+                        </button>
+                        <button class="btn category-btn btn-outline-primary" data-category="pizza">
+                            <i class="fas fa-pizza-slice me-1"></i>Pizzas
+                        </button>
+                        <button class="btn category-btn btn-outline-primary" data-category="chicken">
+                            <i class="fas fa-drumstick-bite me-1"></i>Pollo
+                        </button>
+                        <button class="btn category-btn btn-outline-primary" data-category="drinks">
+                            <i class="fas fa-glass-cheers me-1"></i>Bebidas
+                        </button>
+                        <button class="btn category-btn btn-outline-primary" data-category="desserts">
+                            <i class="fas fa-ice-cream me-1"></i>Postres
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Search -->
+            <div class="row mb-4 d-md-none">
+                <div class="col-12">
+                    <div class="position-relative">
+                        <input type="text" class="form-control" placeholder="Buscar productos..." id="mobileSearchInput" style="padding-right: 40px;">
+                        <i class="fas fa-search position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="row" id="productsGrid">
+                <!-- Products will be loaded here dynamically -->
+            </div>
+
+            <!-- Loading Spinner -->
+            <div class="text-center py-5" id="loadingSpinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando productos...</span>
+                </div>
+                <p class="mt-2 text-muted">Cargando deliciosos productos...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Order Modal -->
+    <div class="modal fade" id="quickOrderModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">
+                        <i class="fas fa-shopping-cart text-primary me-2"></i>
+                        Agregar al Carrito
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <img src="" alt="" class="img-fluid rounded" id="modalProductImage">
+                        </div>
+                        <div class="col-md-7">
+                            <h4 id="modalProductName">Nombre del Producto</h4>
+                            <p class="text-muted" id="modalProductDescription">Descripción del producto</p>
+                            <div class="mb-3">
+                                <h5 class="text-primary" id="modalProductPrice">$0</h5>
+                            </div>
+                            
+                            <!-- Quantity Selector -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Cantidad</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="form-control text-center" value="1" min="1" max="10" id="modalQuantity" style="width: 80px;">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Special Instructions -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Instrucciones especiales</label>
+                                <textarea class="form-control" rows="3" placeholder="Ejemplo: Sin cebolla, extra queso..." id="modalInstructions"></textarea>
+                            </div>
+
+                            <!-- Total -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="fw-semibold">Total:</span>
+                                <h5 class="text-primary mb-0" id="modalTotal">$0</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-add-cart text-white px-4" onclick="addToCart()">
+                        <i class="fas fa-shopping-cart me-2"></i>
+                        Agregar al Carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="successToast" class="toast" role="alert">
+            <div class="toast-header bg-success text-white border-0">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">¡Agregado!</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                Producto agregado al carrito exitosamente
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Mock products data
+        const products = [
+            {
+                id: 1,
+                name: "Big Cosmo Burger",
+                description: "Hamburguesa doble con queso, lechuga, tomate y salsa especial",
+                price: 8990,
+                category: "hamburgers",
+                image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop",
+                available: true,
+                featured: true
+            },
+            {
+                id: 2,
+                name: "Pizza Margherita",
+                description: "Pizza clásica con salsa de tomate, mozzarella y albahaca fresca",
+                price: 12990,
+                category: "pizza",
+                image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
+                available: true,
+                featured: false
+            },
+            {
+                id: 3,
+                name: "Pollo Crispy",
+                description: "Piezas de pollo crujiente con papas fritas y ensalada",
+                price: 7990,
+                category: "chicken",
+                image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop",
+                available: true,
+                featured: true
+            },
+            {
+                id: 4,
+                name: "Coca Cola 500ml",
+                description: "Refrescante bebida gaseosa",
+                price: 1500,
+                category: "drinks",
+                image: "https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=400&h=300&fit=crop",
+                available: true,
+                featured: false
+            },
+            {
+                id: 5,
+                name: "Helado Artesanal",
+                description: "Delicioso helado de vainilla con topping de chocolate",
+                price: 3990,
+                category: "desserts",
+                image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop",
+                available: true,
+                featured: false
+            },
+            {
+                id: 6,
+                name: "Cheese Burger",
+                description: "Hamburguesa con queso cheddar, cebolla caramelizada y pepinillos",
+                price: 6990,
+                category: "hamburgers",
+                image: "https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=400&h=300&fit=crop",
+                available: true,
+                featured: false
+            },
+            {
+                id: 7,
+                name: "Pizza Pepperoni",
+                description: "Pizza con pepperoni, mozzarella y orégano",
+                price: 14990,
+                category: "pizza",
+                image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&h=300&fit=crop",
+                available: false,
+                featured: false
+            },
+            {
+                id: 8,
+                name: "Alitas BBQ",
+                description: "Alitas de pollo bañadas en salsa barbacoa",
+                price: 9990,
+                category: "chicken",
+                image: "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&h=300&fit=crop",
+                available: true,
+                featured: true
+            }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('cosmofood_cart')) || [];
+        let currentCategory = 'all';
+        let currentProduct = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            updateCartBadge();
+            loadProducts();
+            setupEventListeners();
+        });
+
+        function loadUserData() {
+            const user = JSON.parse(sessionStorage.getItem('cosmofood_user'));
+            if (user) {
+                document.getElementById('userName').textContent = user.email.split('@')[0];
+            }
+        }
+
+        function setupEventListeners() {
+            // Category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-btn').forEach(b => {
+                        b.classList.remove('active');
+                        b.classList.add('btn-outline-primary');
+                    });
+                    this.classList.add('active');
+                    this.classList.remove('btn-outline-primary');
+                    
+                    currentCategory = this.getAttribute('data-category');
+                    loadProducts();
+                });
+            });
+
+            // Search functionality
+            const searchInputs = [document.getElementById('searchInput'), document.getElementById('mobileSearchInput')];
+            searchInputs.forEach(input => {
+                if (input) {
+                    input.addEventListener('input', function() {
+                        const query = this.value.toLowerCase();
+                        filterProducts(query);
+                    });
+                }
+            });
+        }
+
+        function loadProducts() {
+            const grid = document.getElementById('productsGrid');
+            const spinner = document.getElementById('loadingSpinner');
+            
+            spinner.style.display = 'block';
+            grid.innerHTML = '';
+
+            // Simulate loading delay
+            setTimeout(() => {
+                let filteredProducts = products;
+                
+                if (currentCategory !== 'all') {
+                    filteredProducts = products.filter(p => p.category === currentCategory);
+                }
+
+                filteredProducts.forEach(product => {
+                    grid.appendChild(createProductCard(product));
+                });
+
+                spinner.style.display = 'none';
+            }, 800);
+        }
+
+        function createProductCard(product) {
+            const col = document.createElement('div');
+            col.className = 'col-lg-3 col-md-4 col-sm-6 mb-4';
+            
+            const availabilityBadge = product.available 
+                ? '<span class="badge bg-success position-absolute top-0 end-0 m-2">Disponible</span>'
+                : '<span class="badge bg-danger position-absolute top-0 end-0 m-2">Agotado</span>';
+            
+            const featuredBadge = product.featured 
+                ? '<span class="badge bg-warning position-absolute top-0 start-0 m-2">⭐ Destacado</span>'
+                : '';
+
+            col.innerHTML = `
+                <div class="card product-card h-100 shadow-sm">
+                    <div class="position-relative">
+                        <img src="${product.image}" class="card-img-top product-image" alt="${product.name}">
+                        ${availabilityBadge}
+                        ${featuredBadge}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">${product.name}</h5>
+                        <p class="card-text text-muted small flex-grow-1">${product.description}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <h5 class="text-primary mb-0">$${product.price.toLocaleString()}</h5>
+                            ${product.available 
+                                ? `<button class="btn btn-add-cart text-white btn-sm" onclick="openQuickOrder(${product.id})">
+                                     <i class="fas fa-plus me-1"></i>Agregar
+                                   </button>`
+                                : `<button class="btn btn-secondary btn-sm" disabled>
+                                     <i class="fas fa-times me-1"></i>No disponible
+                                   </button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return col;
+        }
+
+        function filterProducts(query) {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const description = card.querySelector('.card-text').textContent.toLowerCase();
+                
+                if (title.includes(query) || description.includes(query)) {
+                    card.closest('.col-lg-3').style.display = 'block';
+                } else {
+                    card.closest('.col-lg-3').style.display = 'none';
+                }
+            });
+        }
+
+        function openQuickOrder(productId) {
+            currentProduct = products.find(p => p.id === productId);
+            
+            document.getElementById('modalProductImage').src = currentProduct.image;
+            document.getElementById('modalProductName').textContent = currentProduct.name;
+            document.getElementById('modalProductDescription').textContent = currentProduct.description;
+            document.getElementById('modalProductPrice').textContent = `$${currentProduct.price.toLocaleString()}`;
+            document.getElementById('modalQuantity').value = 1;
+            document.getElementById('modalInstructions').value = '';
+            
+            updateModalTotal();
+            
+            const modal = new bootstrap.Modal(document.getElementById('quickOrderModal'));
+            modal.show();
+        }
+
+        function increaseQuantity() {
+            const input = document.getElementById('modalQuantity');
+            const newValue = Math.min(parseInt(input.value) + 1, 10);
+            input.value = newValue;
+            updateModalTotal();
+        }
+
+        function decreaseQuantity() {
+            const input = document.getElementById('modalQuantity');
+            const newValue = Math.max(parseInt(input.value) - 1, 1);
+            input.value = newValue;
+            updateModalTotal();
+        }
+
+        function updateModalTotal() {
+            const quantity = parseInt(document.getElementById('modalQuantity').value);
+            const total = currentProduct.price * quantity;
+            document.getElementById('modalTotal').textContent = `$${total.toLocaleString()}`;
+        }
+
+        function addToCart() {
+            const quantity = parseInt(document.getElementById('modalQuantity').value);
+            const instructions = document.getElementById('modalInstructions').value;
+            
+            const cartItem = {
+                id: currentProduct.id,
+                name: currentProduct.name,
+                price: currentProduct.price,
+                quantity: quantity,
+                instructions: instructions,
+                image: currentProduct.image,
+                total: currentProduct.price * quantity
+            };
+
+            // Check if product already exists in cart
+            const existingIndex = cart.findIndex(item => item.id === currentProduct.id);
+            if (existingIndex !== -1) {
+                cart[existingIndex].quantity += quantity;
+                cart[existingIndex].total = cart[existingIndex].price * cart[existingIndex].quantity;
+            } else {
+                cart.push(cartItem);
+            }
+
+            localStorage.setItem('cosmofood_cart', JSON.stringify(cart));
+            updateCartBadge();
+            
+            // Show success toast
+            document.getElementById('toastMessage').textContent = `${currentProduct.name} agregado al carrito`;
+            const toast = new bootstrap.Toast(document.getElementById('successToast'));
+            toast.show();
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('quickOrderModal'));
+            modal.hide();
+        }
+
+        function updateCartBadge() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartBadge').textContent = totalItems;
+        }
+
+        // Quantity input listeners
+        document.getElementById('modalQuantity').addEventListener('input', updateModalTotal);
+
+        console.log('%c🍽️ Catálogo Cosmofood', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
+        console.log('Productos cargados:', products.length);
+        console.log('Carrito actual:', cart.length, 'items');
+    </script>
+</body>
+</html>
