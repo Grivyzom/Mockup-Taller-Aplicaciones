@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Cosmofood</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff6b35',
+                        secondary: '#2c3e50',
+                        accent: '#f39c12',
+                        success: '#27ae60',
+                        danger: '#e74c3c'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .login-container {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .form-control:focus {
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b35, #f39c12);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #e55a2e, #d68910);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center min-vh-100">
+    <!-- Background decoration -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden" style="z-index: -1;">
+        <div class="position-absolute top-0 start-0 w-25 h-25 bg-white/10 rounded-full" style="transform: translate(-50%, -50%);"></div>
+        <div class="position-absolute bottom-0 end-0 w-32 h-32 bg-white/5 rounded-full" style="transform: translate(50%, 50%);"></div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="login-container card border-0 shadow-lg rounded-4 p-4">
+                    <div class="card-body p-4">
+                        <!-- Header -->
+                        <div class="text-center mb-5">
+                            <div class="bg-gradient-to-br from-orange-400 to-amber-500 w-20 h-20 rounded-full d-flex align-items-center justify-content-center mx-auto mb-3">
+                                <i class="fas fa-utensils text-white text-2xl"></i>
+                            </div>
+                            <h2 class="h3 fw-bold text-dark mb-2">Bienvenido a Cosmofood</h2>
+                            <p class="text-muted mb-0">Inicia sesión para continuar</p>
+                        </div>
+
+                        <!-- Demo Users Alert -->
+                        <div class="alert alert-info border-0 mb-4">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <small>
+                                    <strong>Demo:</strong> cliente@cosmofood.cl / Cliente123
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Login Form -->
+                        <form id="loginForm" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-semibold">
+                                    <i class="fas fa-envelope text-primary me-2"></i>
+                                    Correo Electrónico
+                                </label>
+                                <input 
+                                    type="email" 
+                                    class="form-control form-control-lg" 
+                                    id="email" 
+                                    placeholder="tu@email.com"
+                                    value="cliente@cosmofood.cl"
+                                    required
+                                >
+                                <div class="invalid-feedback">
+                                    Por favor ingresa un correo válido.
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-semibold">
+                                    <i class="fas fa-lock text-primary me-2"></i>
+                                    Contraseña
+                                </label>
+                                <div class="input-group">
+                                    <input 
+                                        type="password" 
+                                        class="form-control form-control-lg" 
+                                        id="password"
+                                        placeholder="Tu contraseña"
+                                        value="Cliente123"
+                                        required
+                                        minlength="6"
+                                    >
+                                    <button 
+                                        class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        id="togglePassword"
+                                    >
+                                        <i class="fas fa-eye" id="toggleIcon"></i>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback">
+                                    La contraseña debe tener al menos 6 caracteres.
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label text-muted" for="rememberMe">
+                                        Recordarme
+                                    </label>
+                                </div>
+                                <a href="#" class="text-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                                    ¿Olvidaste tu contraseña?
+                                </a>
+                            </div>
+
+                            <button 
+                                type="submit" 
+                                class="btn btn-primary btn-lg w-100 mb-3 transition-all duration-300"
+                                id="loginBtn"
+                            >
+                                <i class="fas fa-sign-in-alt me-2"></i>
+                                Iniciar Sesión
+                            </button>
+                        </form>
+
+                        <!-- Divider -->
+                        <div class="text-center my-4">
+                            <span class="text-muted">o</span>
+                        </div>
+
+                        <!-- Alternative login methods -->
+                        <div class="d-grid gap-2 mb-4">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="fab fa-google text-danger me-2"></i>
+                                Continuar con Google
+                            </button>
+                        </div>
+
+                        <!-- Register link -->
+                        <div class="text-center">
+                            <p class="text-muted mb-0">
+                                ¿No tienes cuenta? 
+                                <a href="register.html" class="text-primary fw-semibold text-decoration-none">
+                                    Regístrate aquí
+                                </a>
+                            </p>
+                        </div>
+
+                        <!-- Back to home -->
+                        <div class="text-center mt-4">
+                            <a href="../../index.html" class="text-muted text-decoration-none">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver al inicio
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Access Demo -->
+                <div class="text-center mt-4">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-light" onclick="demoLogin('cliente')">
+                            <i class="fas fa-user me-1"></i>Cliente
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-light" onclick="demoLogin('admin')">
+                            <i class="fas fa-user-shield me-1"></i>Admin
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-light" onclick="demoLogin('cajero')">
+                            <i class="fas fa-cash-register me-1"></i>Cajero
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">
+                        <i class="fas fa-key text-primary me-2"></i>
+                        Recuperar Contraseña
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-3">
+                        Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+                    </p>
+                    <form id="forgotPasswordForm">
+                        <div class="mb-3">
+                            <label for="resetEmail" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="resetEmail" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Enviar Enlace
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="successToast" class="toast" role="alert">
+            <div class="toast-header bg-success text-white border-0">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">Éxito</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                Inicio de sesión exitoso. Redirigiendo...
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Toast -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="errorToast" class="toast" role="alert">
+            <div class="toast-header bg-danger text-white border-0">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="errorMessage">
+                Credenciales incorrectas. Intenta nuevamente.
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Demo users data
+        const demoUsers = {
+            'cliente@cosmofood.cl': { password: 'Cliente123', role: 'cliente', redirect: '../customer/catalog.html' },
+            'admin@cosmofood.cl': { password: 'Admin123', role: 'admin', redirect: '../admin/dashboard.html' },
+            'cajero@cosmofood.cl': { password: 'Cajero123', role: 'cajero', redirect: '../pos/cashier.html' },
+            'cocina@cosmofood.cl': { password: 'Cocina123', role: 'cocina', redirect: '../kitchen/orders.html' }
+        };
+
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const password = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
+            
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                password.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Demo login function
+        function demoLogin(type) {
+            const emailField = document.getElementById('email');
+            const passwordField = document.getElementById('password');
+            
+            switch(type) {
+                case 'cliente':
+                    emailField.value = 'cliente@cosmofood.cl';
+                    passwordField.value = 'Cliente123';
+                    break;
+                case 'admin':
+                    emailField.value = 'admin@cosmofood.cl';
+                    passwordField.value = 'Admin123';
+                    break;
+                case 'cajero':
+                    emailField.value = 'cajero@cosmofood.cl';
+                    passwordField.value = 'Cajero123';
+                    break;
+            }
+        }
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const form = this;
+            if (!form.checkValidity()) {
+                e.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Show loading state
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Iniciando sesión...';
+            loginBtn.disabled = true;
+
+            // Simulate login delay
+            setTimeout(() => {
+                if (demoUsers[email] && demoUsers[email].password === password) {
+                    // Success
+                    const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+                    successToast.show();
+                    
+                    // Store user session
+                    sessionStorage.setItem('cosmofood_user', JSON.stringify({
+                        email: email,
+                        role: demoUsers[email].role,
+                        loginTime: new Date().toISOString()
+                    }));
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        window.location.href = demoUsers[email].redirect;
+                    }, 1500);
+                    
+                } else {
+                    // Error
+                    const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+                    errorToast.show();
+                    
+                    // Reset button
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión';
+                    loginBtn.disabled = false;
+                    
+                    // Shake animation
+                    form.classList.add('animate__animated', 'animate__shakeX');
+                    setTimeout(() => {
+                        form.classList.remove('animate__animated', 'animate__shakeX');
+                    }, 1000);
+                }
+            }, 1500);
+        });
+
+        // Forgot password form
+        document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('resetEmail').value;
+            
+            // Simulate email sending
+            setTimeout(() => {
+                document.getElementById('errorMessage').textContent = 
+                    `Se ha enviado un enlace de recuperación a ${email}`;
+                const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+                errorToast.show();
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('forgotPasswordModal'));
+                modal.hide();
+            }, 1000);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Auto-focus on load
+        window.addEventListener('load', function() {
+            document.getElementById('email').focus();
+        });
+
+        console.log('%c🔐 Login Demo - Cosmofood', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
+        console.log('%cUsuarios de prueba:', 'color: #2c3e50; font-weight: bold;');
+        console.log('Cliente: cliente@cosmofood.cl / Cliente123');
+        console.log('Admin: admin@cosmofood.cl / Admin123');
+        console.log('Cajero: cajero@cosmofood.cl / Cajero123');
+    </script>
+</body>
+</html>
