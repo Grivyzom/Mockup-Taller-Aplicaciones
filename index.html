@@ -296,6 +296,401 @@
         </div>
     </section>
 
+<!-- Banner de Promos del Día -->
+<section class="py-12 bg-gradient-to-r from-red-600 to-orange-600 text-white position-relative overflow-hidden">
+    <div class="position-absolute inset-0 bg-black opacity-10"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-white text-danger rounded-pill px-3 py-1 me-3">
+                        <i class="fas fa-fire me-1"></i>
+                        <span class="fw-bold small">PROMO DEL DÍA</span>
+                    </div>
+                    <div class="bg-danger text-white rounded-pill px-3 py-1">
+                        <i class="fas fa-clock me-1"></i>
+                        <span class="fw-bold small">Válido hasta las 23:59</span>
+                    </div>
+                </div>
+                
+                <h2 class="display-5 fw-bold mb-3">
+                    🍔 Combo Cosmic Special 
+                    <span class="text-warning">¡Oferta Limitada!</span>
+                </h2>
+                
+                <p class="lead mb-4 opacity-90">
+                    <strong>Big Cosmo Burger + Papas Grandes + Bebida 500ml</strong>
+                    <br>
+                    <span class="text-decoration-line-through opacity-75 fs-6">Precio normal: $12.990</span>
+                </p>
+                
+                <div class="d-flex align-items-center gap-4 mb-4">
+                    <div class="text-center">
+                        <div class="display-4 fw-bold text-warning">$9.990</div>
+                        <div class="small opacity-75">Precio Especial</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="h4 fw-bold text-success mb-0">Ahorra $3.000</div>
+                        <div class="small opacity-75">23% de descuento</div>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="pages/customer/catalog.html" class="btn btn-warning btn-lg px-4 py-3 rounded-pill shadow-lg">
+                        <i class="fas fa-shopping-cart me-2"></i>
+                        ¡Pedir Ahora!
+                    </a>
+                    <a href="pages/auth/login.html" class="btn btn-outline-white btn-lg px-4 py-3 rounded-pill">
+                        <i class="fas fa-user me-2"></i>
+                        Iniciar Sesión
+                    </a>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="d-flex gap-4 flex-wrap small opacity-75">
+                        <span><i class="fas fa-truck me-1"></i>Delivery incluido</span>
+                        <span><i class="fas fa-clock me-1"></i>25-30 minutos</span>
+                        <span><i class="fas fa-star me-1"></i>Más de 500 vendidos</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="text-center">
+                    <div class="position-relative d-inline-block">
+                        <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=400&fit=crop" 
+                             class="rounded-circle shadow-lg" 
+                             style="width: 300px; height: 300px; object-fit: cover;" 
+                             alt="Combo Cosmic Special">
+                        
+                        <!-- Badge flotante -->
+                        <div class="position-absolute top-0 end-0 bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-lg"
+                             style="width: 80px; height: 80px; transform: translate(10px, -10px);">
+                            <div class="text-center">
+                                <div class="fw-bold">-23%</div>
+                                <small style="font-size: 10px;">OFF</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Contador regresivo -->
+                        <div class="position-absolute bottom-0 start-50 translate-middle-x bg-dark text-white rounded-pill px-3 py-2 shadow-lg">
+                            <div class="d-flex align-items-center gap-2"></div>
+                                <i class="fas fa-hourglass-half text-warning"></i>
+                                <span class="fw-bold small" id="countdown">23:45:12</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Indicadores de confianza -->
+        <div class="row mt-5">
+            <div class="col-md-3 text-center">
+                <div class="h5 fw-bold mb-1">
+                    <i class="fas fa-users text-warning me-2"></i>
+                    +1.200
+                </div>
+                <small class="opacity-75">Clientes satisfechos</small>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="h5 fw-bold mb-1">
+                    <i class="fas fa-clock text-warning me-2"></i>
+                    25 min
+                </div>
+                <small class="opacity-75">Tiempo promedio</small>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="h5 fw-bold mb-1">
+                    <i class="fas fa-star text-warning me-2"></i>
+                    4.8/5
+                </div>
+                <small class="opacity-75">Calificación promedio</small>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="h5 fw-bold mb-1">
+                    <i class="fas fa-shield-alt text-warning me-2"></i>
+                    100%
+                </div>
+                <small class="opacity-75">Garantía de calidad</small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Elementos decorativos -->
+    <div class="position-absolute top-0 end-0 opacity-10">
+        <i class="fas fa-hamburger" style="font-size: 15rem; transform: rotate(15deg);"></i>
+    </div>
+    <div class="position-absolute bottom-0 start-0 opacity-10">
+        <i class="fas fa-french-fries" style="font-size: 10rem; transform: rotate(-15deg);"></i>
+    </div>
+</section>
+
+        <!-- Catálogo Destacado Section -->
+    <section id="catalog-preview" class="py-16 bg-dark">
+        <div class="container">
+            <div class="text-center mb-12">
+                <h2 class="display-4 fw-bold text-white mb-4">
+                    <i class="fas fa-star text-white me-3"></i>
+                    Nuestros Productos Destacados
+                </h2>
+                <p class="lead text-white">Descubre los sabores más populares de Cosmofood</p>
+            </div>
+
+            <!-- Carousel -->
+            <div id="productCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="2"></button>
+                </div>
+
+                <div class="carousel-inner">
+                    <!-- Slide 1 -->
+                    <div class="carousel-item active">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="carousel-product-card">
+                                    <div class="position-relative">
+                                        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop" 
+                                             class="product-image-carousel" alt="Big Cosmo Burger">
+                                        <span class="featured-badge position-absolute top-0 start-0 m-3">
+                                            <i class="fas fa-star me-1 text-white"></i>Destacado
+                                        </span>
+                                    </div>
+                                    <div class="p-4">
+                                        <h5 class="fw-bold mb-2 text-white">Big Cosmo Burger</h5>
+                                        <p class="text-white small mb-3">Hamburguesa doble con queso, lechuga, tomate y salsa especial</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="price-badge text-white">$8.990</span>
+                                            <a href="pages/customer/catalog.html" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-shopping-cart me-1 text-white"></i>Ver Más
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="carousel-product-card">
+                                    <div class="position-relative">
+                                        <img src="https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop" 
+                                             class="product-image-carousel" alt="Pollo Crispy">
+                                        <span class="featured-badge position-absolute top-0 start-0 m-3">
+                                            <i class="fas fa-fire me-1 text-white"></i>Popular
+                                        </span>
+                                    </div>
+                                    <div class="p-4">
+                                        <h5 class="fw-bold mb-2 text-white">Pollo Crispy</h5>
+                                        <p class="text-white small mb-3">Piezas de pollo crujiente con papas fritas y ensalada</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="price-badge text-white">$7.990</span>
+                                            <a href="pages/customer/catalog.html" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-shopping-cart me-1 text-white"></i>Ver Más
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="carousel-product-card">
+                                    <div class="position-relative">
+                                        <img src="https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&h=300&fit=crop" 
+                                             class="product-image-carousel" alt="Alitas BBQ">
+                                        <span class="featured-badge position-absolute top-0 start-0 m-3">
+                                            <i class="fas fa-flame me-1 text-white"></i>Picante
+                                        </span>
+                                    </div>
+                                    <div class="p-4">
+                                        <h5 class="fw-bold mb-2 text-white">Alitas BBQ</h5>
+                                        <p class="text-white small mb-3">Alitas de pollo bañadas en salsa barbacoa</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="price-badge text-white">$9.990</span>
+                                            <a href="pages/customer/catalog.html" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-shopping-cart me-1 text-white"></i>Ver Más
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="carousel-item">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="carousel-product-card">
+                                    <div class="position-relative">
+                                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop" 
+                                             class="product-image-carousel" alt="Pizza Margherita">
+                                        <span class="featured-badge position-absolute top-0 start-0 m-3">
+                                            <i class="fas fa-leaf me-1 text-white"></i>Vegetariano
+                                        </span>
+                                    </div>
+                                    <div class="p-4">
+                                        <h5 class="fw-bold mb-2">Pizza Margherita</h5>
+                                        <p class="text-muted small mb-3">Pizza clásica con salsa de tomate, mozzarella y albahaca fresca</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="price-badge">$12.990</span>
+                                            <a href="pages/customer/catalog.html" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-shopping-cart me-1"></i>Ver Más
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="carousel-product-card">
+                                    <div class="position-relative">
+                                        <img src="https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=400&h=300&fit=crop" 
+                                             class="product-image-carousel" alt="Cheese Burger">
+                                    </div>
+                                    <div class="p-4">
+                                        <h5 class="fw-bold mb-2">Cheese Burger</h5>
+                                        <p class="text-muted small mb-3">Hamburguesa con queso cheddar, cebolla caramelizada y pepinillos</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="price-badge">$6.990</span>
+                                            <a href="pages/customer/catalog.html" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-shopping-cart me-1 "></i>Ver Más
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="carousel-product-card">
+                                    <div class="position-relative">
+                                        <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&h=300&fit=crop" 
+                                             class="product-image-carousel" alt="Pizza Pepperoni">
+                                        <span class="featured-badge position-absolute top-0 start-0 m-3">
+                                            <i class="fas fa-pepper-hot me-1"></i>Clásico
+                                        </span>
+                                    </div>
+                                    <div class="p-4">
+                                        <h5 class="fw-bold mb-2">Pizza Pepperoni</h5>
+                                        <p class="text-white small mb-3">Pizza con pepperoni, mozzarella y orégano</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="price-badge">$14.990</span>
+                                            <a href="pages/customer/catalog.html" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-shopping-cart me-1"></i>Ver Más
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="carousel-item">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="carousel-product-card">
+                                    <div class="position-relative">
+                                        <img src="https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=400&h=300&fit=crop" 
+                                             class="product-image-carousel" alt="Coca Cola">
+                                        <span class="featured-badge position-absolute top-0 start-0 m-3">
+                                            <i class="fas fa-snowflake me-1"></i>Refrescante
+                                        </span>
+                                    </div>
+                                    <div class="p-4">
+                                        <h5 class="fw-bold mb-2">Coca Cola 500ml</h5>
+                                        <p class="text-white small mb-3">Refrescante bebida gaseosa</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="price-badge">$1.500</span>
+                                            <a href="pages/customer/catalog.html" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-shopping-cart me-1"></i>Ver Más
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="carousel-product-card">
+                                    <div class="position-relative">
+                                        <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop" 
+                                             class="product-image-carousel" alt="Helado Artesanal">
+                                        <span class="featured-badge position-absolute top-0 start-0 m-3">
+                                            <i class="fas fa-heart me-1 text-white"></i>Especial
+                                        </span>
+                                    </div>
+                                    <div class="p-4">
+                                        <h5 class="fw-bold mb-2 text-white">Helado Artesanal</h5>
+                                        <p class="text-white small mb-3">Delicioso helado de vainilla con topping de chocolate</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="price-badge text-white">$3.990</span>
+                                            <a href="pages/customer/catalog.html" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-shopping-cart me-1 text-white"></i>Ver Más
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="carousel-product-card">
+                                    <div class="position-relative">
+                                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop" 
+                                             class="product-image-carousel" alt="Combo Familiar">
+                                        <span class="featured-badge position-absolute top-0 start-0 m-3">
+                                            <i class="fas fa-users me-1 text-white"></i>Familiar
+                                        </span>
+                                    </div>
+                                    <div class="p-4">
+                                        <h5 class="fw-bold mb-2 text-white">Combo Familiar</h5>
+                                        <p class="text-white small mb-3">Para compartir: 2 hamburguesas, papas grandes y bebidas</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="price-badge text-white">$18.990</span>
+                                            <a href="pages/customer/catalog.html" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-shopping-cart me-1 text-white"></i>Ver Más
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carousel Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="bg-gradient-to-r from-orange-100 to-amber-100 rounded-4 p-5">
+                            <h4 class="fw-bold text-dark mb-3">¿Listo para hacer tu pedido?</h4>
+                            <p class="text-muted mb-4">Explora nuestro catálogo completo y disfruta de los mejores sabores de Valdivia</p>
+                            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                                <a href="pages/customer/catalog.html" class="btn btn-primary btn-lg px-4 py-3 rounded-pill">
+                                    <i class="fas fa-utensils me-2"></i>Ver Catálogo Completo
+                                </a>
+                                <a href="pages/auth/login.html" class="btn btn-outline-primary btn-lg px-4 py-3 rounded-pill">
+                                    <i class="fas fa-user me-2"></i>Iniciar Sesión
+                                </a>
+                            </div>
+                            <div class="mt-4">
+                                <div class="d-flex gap-4 justify-content-center flex-wrap text-sm text-muted">
+                                    <span><i class="fas fa-truck text-primary me-1"></i>Delivery gratis > $15.000</span>
+                                    <span><i class="fas fa-clock text-primary me-1"></i>Entrega en 30 min</span>
+                                    <span><i class="fas fa-star text-primary me-1"></i>+1000 clientes satisfechos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Sprint Information -->
     <section class="py-16 bg-dark text-white">
         <div class="container">
@@ -422,7 +817,7 @@
                                 <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 50px; height: 50px;">
                                     <i class="fas fa-user"></i>
                                 </div>
-                                <h6 class="mb-1">Francisco Alfaro</h6>
+                                <h6 class="mb-1 text-white">Francisco Alfaro</h6>
                                 <small class="text-white">Frontend & UX/UI</small>
                             </div>
                         </div>
@@ -431,7 +826,7 @@
                                 <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 50px; height: 50px;">
                                     <i class="fas fa-user"></i>
                                 </div>
-                                <h6 class="mb-1">Ricardo Álvarez</h6>
+                                <h6 class="mb-1 text-white">Ricardo Álvarez</h6>
                                 <small class="text-white">Backend & Database</small>
                             </div>
                         </div>
@@ -440,7 +835,7 @@
                                 <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 50px; height: 50px;">
                                     <i class="fas fa-user"></i>
                                 </div>
-                                <h6 class="mb-1">Francisco Fuentealba</h6>
+                                <h6 class="mb-1 text-white">Francisco Fuentealba</h6>
                                 <small class="text-white">Full Stack & DevOps</small>
                             </div>
                         </div>
@@ -580,6 +975,18 @@
             observer.observe(card);
         });
 
+        // Animate carousel products on load
+        document.querySelectorAll('.carousel-product-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 200 * (index + 1));
+        });
+
         // Back to top button
         const backToTopBtn = document.createElement('button');
         backToTopBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
@@ -600,30 +1007,6 @@
             } else {
                 backToTopBtn.style.display = 'none';
             }
-        });
-
-        // Module counter animation
-        function animateCounter(element, target) {
-            let current = 0;
-            const increment = target / 100;
-            const timer = setInterval(() => {
-                current += increment;
-                element.textContent = Math.floor(current);
-                if (current >= target) {
-                    element.textContent = target;
-                    clearInterval(timer);
-                }
-            }, 20);
-        }
-
-        // Stats animation when visible
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // You can add animated stats here if needed
-                    console.log('Stats section visible');
-                }
-            });
         });
 
         // Keyboard navigation support
@@ -652,6 +1035,18 @@
         console.log('Alt + 2: Panel Admin');
         console.log('Alt + 3: Sistema POS');
         console.log('Alt + 4: Panel Cocina');
+
+        // Carousel auto-pause on hover
+        const carousel = document.getElementById('productCarousel');
+        const carouselInstance = new bootstrap.Carousel(carousel);
+        
+        carousel.addEventListener('mouseenter', () => {
+            carouselInstance.pause();
+        });
+        
+        carousel.addEventListener('mouseleave', () => {
+            carouselInstance.cycle();
+        });
     </script>
 
 </body>
