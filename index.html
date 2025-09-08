@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cosmofood - Sistema de Gestión</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/css/styles.css" rel="stylesheet">
+    <!-- Linkeo con Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -26,39 +28,66 @@
             }
         }
     </script>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-    </style>
 </head>
 <body class="bg-gradient-to-br from-blue-500 via-purple-600 to-blue-800 min-h-screen">
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark/90 backdrop-blur-sm fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-orange-400" href="#">
-                <i class="fas fa-utensils me-2"></i>Cosmofood
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+    <!-- NavBar de BootStrap, especificamente | Offcanvas   -->
+    <nav class="navbar navbar-expand-lg position-absolute w-100 bg-transparent" style="z-index: 1030;">
+
+        <div class="container-fluid">
+
+        <a class="navbar-brand bg-dark text-white px-3 py-2 rounded-pill" href="/">CosmoFood</a>
+
+
+            <button class="navbar-toggler navbar-toggler-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            
                 <span class="navbar-toggler-icon"></span>
+
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#modules">Módulos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#info">Información</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#team">Equipo</a>
-                    </li>
-                </ul>
-            </div>
+
+                <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header border-bottom border-secondary">
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#modules">
+                                    <i class="fas fa-th-large me-1 text-white"></i>
+                                    Módulos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#info">
+                                    <i class="fas fa-info-circle me-1 text-white"></i>
+                                    Información
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#team">
+                                    <i class="fas fa-users me-1 text-white"></i>
+                                    Equipo
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="pages/auth/login.html">
+                                    <i class="fas fa-sign-in-alt me-1 text-white"></i>
+                                    Login
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="pages/auth/register.html">
+                                    <i class="fas fa-user-plus me-1 text-white"></i>
+                                    Registrate
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="relative bg-gradient-to-r from-orange-600 to-amber-500 text-white pt-20 pb-16">
         <div class="absolute inset-0 bg-black/20"></div>
         <div class="container relative z-10 text-center py-16">
@@ -68,41 +97,32 @@
                     Cosmofood
                 </h1>
                 <p class="lead fs-3 mb-4 opacity-90">Sistema Integral de Gestión para Restaurantes</p>
-                <p class="fs-5 mb-5">Mockup - Taller de Diseño y Desarrollo de Aplicaciones</p>
                 <div class="d-flex gap-3 justify-content-center flex-wrap">
                     <a href="#modules" class="btn btn-light btn-lg px-4 py-3 rounded-pill shadow-lg">
                         <i class="fas fa-rocket me-2"></i>Explorar Módulos
                     </a>
-                    <a href="pages/auth/login.html" class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill">
-                        <i class="fas fa-sign-in-alt me-2"></i>Demo Login
-                    </a>
                 </div>
             </div>
-        </div>
-        <div class="absolute bottom-0 left-0 w-full overflow-hidden">
-            <svg viewBox="0 0 1200 120" class="relative block w-full h-16">
-                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="fill-white"></path>
-            </svg>
         </div>
     </section>
 
     <!-- Project Info Section -->
-    <section id="info" class="py-16 bg-white">
+    <section id="info" class="py-16 bg-dark text-white">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8">
                     <div class="pe-lg-5">
-                        <h2 class="h1 mb-4 text-dark">
+                        <h2 class="h1 mb-4 text-white">
                             <i class="fas fa-info-circle text-primary me-3"></i>
                             Sobre el Proyecto
                         </h2>
-                        <p class="fs-5 text-muted mb-4">
+                        <p class="fs-5 mb-4 text-white">
                             Sistema de gestión integral para <span class="fw-bold text-primary">Cosmofood</span>, 
                             un local de comida rápida en Valdivia. Este mockup presenta las interfaces diseñadas 
                             para digitalizar los procesos de venta, inventario y delivery.
                         </p>
                         
-                        <h5 class="text-dark mb-3">Problemática Resuelta:</h5>
+                        <h5 class="text-white mb-3">Problemática Resuelta:</h5>
                         <ul class="list-unstyled">
                             <li class="d-flex align-items-center mb-2">
                                 <i class="fas fa-check-circle text-success me-3"></i>
@@ -146,14 +166,14 @@
     </section>
 
     <!-- Modules Section -->
-    <section id="modules" class="py-16 bg-gray-50">
+    <section id="modules" class="py-16 bg-dark text-white">
         <div class="container">
             <div class="text-center mb-12">
-                <h2 class="display-4 fw-bold text-dark mb-4">
+                <h2 class="display-4 fw-bold text-white mb-4">
                     <i class="fas fa-th-large text-primary me-3"></i>
                     Módulos del Sistema
                 </h2>
-                <p class="lead text-muted">Explora las diferentes interfaces diseñadas para cada tipo de usuario</p>
+                <p class="lead text-white">Explora las diferentes interfaces diseñadas para cada tipo de usuario</p>
             </div>
 
             <div class="row g-4">
@@ -164,7 +184,7 @@
                             <div class="bg-gradient-to-br from-orange-400 to-amber-500 w-20 h-20 rounded-full d-flex align-items-center justify-content-center mx-auto mb-4">
                                 <i class="fas fa-user-friends text-white text-3xl"></i>
                             </div>
-                            <h3 class="card-title h4 mb-3 text-dark">Módulo Cliente</h3>
+                            <h3 class="card-title h4 mb-3 text-muted">Módulo Cliente</h3>
                             <p class="card-text text-muted mb-4">
                                 Experiencia completa para los clientes: desde el registro hasta el seguimiento de pedidos.
                             </p>
@@ -205,7 +225,7 @@
                             <div class="bg-gradient-to-br from-gray-700 to-gray-900 w-20 h-20 rounded-full d-flex align-items-center justify-content-center mx-auto mb-4">
                                 <i class="fas fa-cogs text-white text-3xl"></i>
                             </div>
-                            <h3 class="card-title h4 mb-3 text-dark">Módulo Administrativo</h3>
+                            <h3 class="card-title h4 mb-3 text-muted">Módulo Administrativo</h3>
                             <p class="card-text text-muted mb-4">
                                 Panel completo para la gestión del negocio: productos, pedidos, reportes y más.
                             </p>
@@ -236,9 +256,9 @@
                     <div class="card h-100 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                         <div class="card-body p-5 text-center">
                             <div class="bg-gradient-to-br from-green-500 to-emerald-600 w-20 h-20 rounded-full d-flex align-items-center justify-content-center mx-auto mb-4">
-                                <i class="fas fa-cash-register text-white text-3xl"></i>
+                                <i class="fas fa-cash-register text-muted text-3xl"></i>
                             </div>
-                            <h3 class="card-title h4 mb-3 text-dark">Sistema POS</h3>
+                            <h3 class="card-title h4 mb-3 text-muted">Sistema POS</h3>
                             <p class="card-text text-muted mb-4">
                                 Interfaz optimizada para ventas presenciales rápidas y eficientes en el local.
                             </p>
@@ -259,7 +279,7 @@
                             <div class="bg-gradient-to-br from-red-500 to-red-700 w-20 h-20 rounded-full d-flex align-items-center justify-content-center mx-auto mb-4">
                                 <i class="fas fa-fire text-white text-3xl"></i>
                             </div>
-                            <h3 class="card-title h4 mb-3 text-dark">Panel de Cocina</h3>
+                            <h3 class="card-title h4 mb-3 text-muted">Panel de Cocina</h3>
                             <p class="card-text text-muted mb-4">
                                 Gestión de comandas y estados de pedidos para optimizar la preparación de alimentos.
                             </p>
@@ -277,14 +297,14 @@
     </section>
 
     <!-- Sprint Information -->
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-dark text-white">
         <div class="container">
             <div class="text-center mb-12">
-                <h2 class="display-5 fw-bold text-dark mb-4">
+                <h2 class="display-5 fw-bold text-white mb-4">
                     <i class="fas fa-tasks text-primary me-3"></i>
                     Desarrollo por Sprints
                 </h2>
-                <p class="lead text-muted">Metodología ágil aplicada al desarrollo del sistema</p>
+                <p class="lead text-white">Metodología ágil aplicada al desarrollo del sistema</p>
             </div>
             
             <div class="row g-4">
@@ -294,7 +314,7 @@
                             <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
                                 <span class="fw-bold fs-4">1</span>
                             </div>
-                            <h5 class="card-title text-dark">Sprint 1 - Fundación</h5>
+                            <h5 class="card-title text-white">Sprint 1 - Fundación</h5>
                             <p class="card-text text-muted small">Autenticación y gestión de productos</p>
                             <span class="badge bg-success">Completado</span>
                         </div>
@@ -306,7 +326,7 @@
                             <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
                                 <span class="fw-bold fs-4">2</span>
                             </div>
-                            <h5 class="card-title text-dark">Sprint 2 - Ventas</h5>
+                            <h5 class="card-title text-muted">Sprint 2 - Ventas</h5>
                             <p class="card-text text-muted small">Carrito, checkout y POS</p>
                             <span class="badge bg-success">Completado</span>
                         </div>
@@ -318,7 +338,7 @@
                             <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
                                 <span class="fw-bold fs-4">3</span>
                             </div>
-                            <h5 class="card-title text-dark">Sprint 3 - Delivery</h5>
+                            <h5 class="card-title text-muted">Sprint 3 - Delivery</h5>
                             <p class="card-text text-muted small">Gestión de repartidores y entregas</p>
                             <span class="badge bg-success">Completado</span>
                         </div>
@@ -330,7 +350,7 @@
                             <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
                                 <span class="fw-bold fs-4">4</span>
                             </div>
-                            <h5 class="card-title text-dark">Sprint 4 - Soporte</h5>
+                            <h5 class="card-title text-muted">Sprint 4 - Soporte</h5>
                             <p class="card-text text-muted small">Reclamos y funciones adicionales</p>
                             <span class="badge bg-success">Completado</span>
                         </div>
@@ -385,15 +405,15 @@
     </section>
 
     <!-- Team Section -->
-    <section id="team" class="py-16 bg-white">
+    <section id="team" class="py-16 bg-dark">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <h2 class="display-5 fw-bold text-dark mb-4">
+                    <h2 class="display-5 fw-bold text-white mb-4">
                         <i class="fas fa-users text-primary me-3"></i>
                         Equipo de Desarrollo
                     </h2>
-                    <p class="lead text-muted mb-4">
+                    <p class="lead text-white mb-4">
                         Estudiantes de INACAP desarrollando soluciones tecnológicas innovadoras
                     </p>
                     <div class="row g-3">
@@ -403,7 +423,7 @@
                                     <i class="fas fa-user"></i>
                                 </div>
                                 <h6 class="mb-1">Francisco Alfaro</h6>
-                                <small class="text-muted">Frontend & UX/UI</small>
+                                <small class="text-white">Frontend & UX/UI</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -412,7 +432,7 @@
                                     <i class="fas fa-user"></i>
                                 </div>
                                 <h6 class="mb-1">Ricardo Álvarez</h6>
-                                <small class="text-muted">Backend & Database</small>
+                                <small class="text-white">Backend & Database</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -421,7 +441,7 @@
                                     <i class="fas fa-user"></i>
                                 </div>
                                 <h6 class="mb-1">Francisco Fuentealba</h6>
-                                <small class="text-muted">Full Stack & DevOps</small>
+                                <small class="text-white">Full Stack & DevOps</small>
                             </div>
                         </div>
                     </div>
@@ -429,7 +449,7 @@
                 <div class="col-lg-6">
                     <div class="card border-0 shadow-lg">
                         <div class="card-body p-5">
-                            <h5 class="card-title text-dark mb-3">
+                            <h5 class="card-title text-muted mb-3">
                                 <i class="fas fa-graduation-cap text-primary me-2"></i>
                                 Detalles Académicos
                             </h5>
@@ -467,14 +487,14 @@
                         <i class="fas fa-utensils text-primary me-2"></i>
                         Cosmofood
                     </h5>
-                    <p class="text-muted">
+                    <p class="text-white">
                         Proyecto educativo desarrollado como parte del Taller de Diseño y Desarrollo de Aplicaciones.
                         Mockup funcional para demostración académica.
                     </p>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="text-muted mb-2">INACAP - Taller de Aplicaciones</p>
-                    <p class="text-muted mb-0">© 2025 Mockup Educativo</p>
+                <div class="col-md-6 text-md-end text-white">
+                    <p class="text-white mb-2">INACAP - Taller de Aplicaciones</p>
+                    <p class="text-white mb-0">© 2025 Mockup Educativo</p>
                 </div>
             </div>
         </div>
@@ -633,5 +653,6 @@
         console.log('Alt + 3: Sistema POS');
         console.log('Alt + 4: Panel Cocina');
     </script>
+
 </body>
 </html>

@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrativo - Cosmofood</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff6b35',
+                        secondary: '#2c3e50',
+                        accent: '#f39c12',
+                        success: '#27ae60',
+                        danger: '#e74c3c'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+        .sidebar-brand {
+            color: #ff6b35 !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin: 2px 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(255, 107, 53, 0.2);
+            color: #ff6b35;
+            transform: translateX(5px);
+        }
+        .card-metric {
+            background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+        .card-metric:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .metric-revenue { --bg-from: #ff6b35; --bg-to: #f39c12; }
+        .metric-orders { --bg-from: #27ae60; --bg-to: #2ecc71; }
+        .metric-customers { --bg-from: #3498db; --bg-to: #2980b9; }
+        .metric-products { --bg-from: #9b59b6; --bg-to: #8e44ad; }
+        .table-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .badge-status {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .navbar-admin {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+        }
+        @media (max-width: 991.98px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -250px;
+                width: 250px;
+                z-index: 1050;
+                transition: left 0.3s ease;
+            }
+            .sidebar.show {
+                left: 0;
+            }
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        .activity-item {
+            border-left: 3px solid #ff6b35;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+        .quick-action {
+            background: linear-gradient(135deg, #ff6b35, #f39c12);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .quick-action:hover {
+            background: linear-gradient(135deg, #e55a2e, #d68910);
+            transform: translateY(-2px);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar position-fixed" id="sidebar">
+        <div class="p-4">
+            <a class="sidebar-brand d-flex align-items-center text-decoration-none" href="../../index.html">
+                <i class="fas fa-utensils me-2"></i>
+                <span>Cosmofood</span>
+            </a>
+            <small class="text-white-50">Panel Administrativo</small>
+        </div>
+        
+        <nav class="nav flex-column">
+            <a class="nav-link active" href="#dashboard" onclick="showSection('dashboard')">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a>
+            <a class="nav-link" href="#orders" onclick="showSection('orders')">
+                <i class="fas fa-clipboard-list me-2"></i>Pedidos
+            </a>
+            <a class="nav-link" href="products.html">
+                <i class="fas fa-box me-2"></i>Productos
+            </a>
+            <a class="nav-link" href="#customers" onclick="showSection('customers')">
+                <i class="fas fa-users me-2"></i>Clientes
+            </a>
+            <a class="nav-link" href="#delivery" onclick="showSection('delivery')">
+                <i class="fas fa-truck me-2"></i>Delivery
+            </a>
+            <a class="nav-link" href="reports.html">
+                <i class="fas fa-chart-bar me-2"></i>Reportes
+            </a>
+            <a class="nav-link" href="#settings" onclick="showSection('settings')">
+                <i class="fas fa-cog me-2"></i>Configuración
+            </a>
+        </nav>
+        
+        <div class="mt-auto p-4">
+            <div class="text-center">
+                <div class="bg-white/10 rounded-3 p-3">
+                    <i class="fas fa-crown text-warning mb-2"></i>
+                    <h6 class="text-white mb-1">Plan Premium</h6>
+                    <small class="text-white-50">Acceso completo</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" style="margin-left: 250px;">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-admin sticky-top">
+            <div class="container-fluid">
+                <button class="btn btn-outline-secondary d-lg-none me-3" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-4">Panel Administrativo</h4>
+                    <span class="badge bg-success">En línea</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 ms-auto">
+                    <!-- Notifications -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary position-relative" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationBadge">5</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" style="width: 300px;">
+                            <li><h6 class="dropdown-header">Notificaciones Recientes</h6></li>
+                            <li><a class="dropdown-item" href="#">
+                                <i class="fas fa-shopping-cart text-success me-2"></i>
+                                Nuevo pedido #12345
+                                <small class="text-muted d-block">Hace 2 minutos</small>
+                            </a></li>
+                            <li><a class="dropdown-item" href="#">
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                Stock bajo: Hamburguesas
+                                <small class="text-muted d-block">Hace 10 minutos</small>
+                            </a></li>
+                            <li><a class="dropdown-item" href="#">
+                                <i class="fas fa-user-plus text-info me-2"></i>
+                                Nuevo cliente registrado
+                                <small class="text-muted d-block">Hace 1 hora</small>
+                            </a></li>
+                        </ul>
+                    </div>
+
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-shield me-1"></i>
+                            <span id="adminName">Administrador</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Mi Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configuración</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="../auth/login.html"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Dashboard Content -->
+        <div class="container-fluid py-4" id="dashboardContent">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section">
+                <!-- Metrics Cards -->
+                <div class="row mb-4">
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card card-metric metric-revenue h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title opacity-75">Ventas Hoy</h6>
+                                        <h2 class="mb-0" id="todayRevenue">$847.500</h2>
+                                        <small class="opacity-75">+12% vs ayer</small>
+                                    </div>
+                                    <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card card-metric metric-orders h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title opacity-75">Pedidos Hoy</h6>
+                                        <h2 class="mb-0" id="todayOrders">127</h2>
+                                        <small class="opacity-75">+8% vs ayer</small>
+                                    </div>
+                                    <i class="fas fa-shopping-cart fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card card-metric metric-customers h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title opacity-75">Clientes Total</h6>
+                                        <h2 class="mb-0" id="totalCustomers">2.847</h2>
+                                        <small class="opacity-75">+15 nuevos</small>
+                                    </div>
+                                    <i class="fas fa-users fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card card-metric metric-products h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-title opacity-75">Productos</h6>
+                                        <h2 class="mb-0" id="totalProducts">67</h2>
+                                        <small class="opacity-75">3 sin stock</small>
+                                    </div>
+                                    <i class="fas fa-box fa-2x opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="row mb-4">
+                    <div class="col-lg-8">
+                        <div class="card table-card">
+                            <div class="card-header bg-white border-0 pb-0">
+                                <h5 class="card-title">
+                                    <i class="fas fa-chart-area text-primary me-2"></i>
+                                    Ventas de la Semana
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="salesChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card table-card h-100">
+                            <div class="card-header bg-white border-0 pb-0">
+                                <h5 class="card-title">
+                                    <i class="fas fa-chart-pie text-primary me-2"></i>
+                                    Productos Populares
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" style="height: 250px;">
+                                    <canvas id="popularProductsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions & Recent Activity -->
+                <div class="row mb-4">
+                    <div class="col-lg-6">
+                        <div class="card table-card">
+                            <div class="card-header bg-white border-0">
+                                <h5 class="card-title">
+                                    <i class="fas fa-bolt text-primary me-2"></i>
+                                    Acciones Rápidas
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <button class="btn quick-action w-100 p-3" onclick="showSection('orders')">
+                                            <i class="fas fa-plus-circle fa-2x d-block mb-2"></i>
+                                            <span>Nuevo Pedido</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="products.html" class="btn quick-action w-100 p-3 text-decoration-none">
+                                            <i class="fas fa-box fa-2x d-block mb-2"></i>
+                                            <span>Agregar Producto</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn quick-action w-100 p-3" onclick="showSection('customers')">
+                                            <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
+                                            <span>Nuevo Cliente</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="reports.html" class="btn quick-action w-100 p-3 text-decoration-none">
+                                            <i class="fas fa-file-export fa-2x d-block mb-2"></i>
+                                            <span>Exportar Datos</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card table-card">
+                            <div class="card-header bg-white border-0">
+                                <h5 class="card-title">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    Actividad Reciente
+                                </h5>
+                            </div>
+                            <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                                <div class="activity-item">
+                                    <h6 class="mb-1">Pedido #12567 completado</h6>
+                                    <small class="text-muted">Cliente: María González - $24.990</small>
+                                    <div class="text-muted small">Hace 5 minutos</div>
+                                </div>
+                                <div class="activity-item">
+                                    <h6 class="mb-1">Nuevo producto agregado</h6>
+                                    <small class="text-muted">Pizza BBQ - Categoría: Pizzas</small>
+                                    <div class="text-muted small">Hace 15 minutos</div>
+                                </div>
+                                <div class="activity-item">
+                                    <h6 class="mb-1">Cliente registrado</h6>
+                                    <small class="text-muted">Juan Pérez - juan.perez@email.com</small>
+                                    <div class="text-muted small">Hace 32 minutos</div>
+                                </div>
+                                <div class="activity-item">
+                                    <h6 class="mb-1">Stock actualizado</h6>
+                                    <small class="text-muted">Big Cosmo Burger - 45 unidades</small>
+                                    <div class="text-muted small">Hace 1 hora</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card table-card">
+                            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-list text-primary me-2"></i>
+                                    Pedidos Recientes
+                                </h5>
+                                <button class="btn btn-outline-primary btn-sm" onclick="showSection('orders')">
+                                    Ver Todos
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Cliente</th>
+                                                <th>Productos</th>
+                                                <th>Total</th>
+                                                <th>Estado</th>
+                                                <th>Hora</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recentOrdersTable">
+                                            <!-- Orders will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Section -->
+            <div id="orders" class="section" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3>Gestión de Pedidos</h3>
+                    <div class="d-flex gap-2">
+                        <select class="form-select" id="orderStatusFilter">
+                            <option value="all">Todos los Estados</option>
+                            <option value="pending">Pendientes</option>
+                            <option value="preparing">En Preparación</option>
+                            <option value="ready">Listos</option>
+                            <option value="delivered">Entregados</option>
+                            <option value="cancelled">Cancelados</option>
+                        </select>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Nuevo Pedido
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card table-card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Productos</th>
+                                        <th>Total</th>
+                                        <th>Tipo</th>
+                                        <th>Estado</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ordersTable">
+                                    <!-- Orders will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers Section -->
+            <div id="customers" class="section" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3>Gestión de Clientes</h3>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-user-plus me-2"></i>Nuevo Cliente
+                    </button>
+                </div>
+
+                <div class="card table-card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Email</th>
+                                        <th>Teléfono</th>
+                                        <th>Pedidos</th>
+                                        <th>Total Gastado</th>
+                                        <th>Registro</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customersTable">
+                                    <!-- Customers will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery Section -->
+            <div id="delivery" class="section" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3>Gestión de Delivery</h3>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-user-plus me-2"></i>Nuevo Repartidor
+                    </button>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h5>Repartidores Activos</h5>
+                                <h2>8</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <h5>Entregas Pendientes</h5>
+                                <h2>12</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <h5>Tiempo Promedio</h5>
+                                <h2>28 min</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card table-card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Repartidor</th>
+                                        <th>Estado</th>
+                                        <th>Pedido Actual</th>
+                                        <th>Ubicación</th>
+                                        <th>Entregas Hoy</th>
+                                        <th>Calificación</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="deliveryTable">
+                                    <!-- Delivery data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" class="section" style="display: none;">
+                <h3 class="mb-4">Configuración del Sistema</h3>
+                
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card table-card mb-4">
+                            <div class="card-header bg-white border-0">
+                                <h5 class="card-title">Información del Restaurante</h5>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label class="form-label">Nombre del Restaurante</label>
+                                        <input type="text" class="form-control" value="Cosmofood">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Dirección</label>
+                                        <input type="text" class="form-control" value="Av. Pedro Montt 123, Valdivia">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" value="+56 63 221 3456">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" value="contacto@cosmofood.cl">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card table-card mb-4">
+                            <div class="card-header bg-white border-0">
+                                <h5 class="card-title">Configuración de Delivery</h5>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label class="form-label">Costo de Delivery</label>
+                                        <input type="number" class="form-control" value="2990">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Delivery Gratis desde</label>
+                                        <input type="number" class="form-control" value="15000">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Tiempo Estimado (min)</label>
+                                        <input type="number" class="form-control" value="30">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Radio de Entrega (km)</label>
+                                        <input type="number" class="form-control" value="10">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="overlay d-lg-none" id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1040;"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Mock data
+        const mockOrders = [
+            { id: '#12567', customer: 'María González', products: 'Big Cosmo Burger x2, Papas', total: 24990, status: 'delivered', type: 'delivery', time: '14:30' },
+            { id: '#12566', customer: 'Juan Pérez', products: 'Pizza Margherita, Coca Cola', total: 14490, status: 'preparing', type: 'pickup', time: '14:25' },
+            { id: '#12565', customer: 'Ana Morales', products: 'Pollo Crispy, Helado', total: 11980, status: 'ready', type: 'delivery', time: '14:20' },
+            { id: '#12564', customer: 'Carlos López', products: 'Cheese Burger, Papas', total: 9980, status: 'pending', type: 'delivery', time: '14:15' },
+            { id: '#12563', customer: 'Sofía Castro', products: 'Alitas BBQ x2', total: 19980, status: 'delivered', type: 'pickup', time: '14:10' }
+        ];
+
+        const mockCustomers = [
+            { id: 1, name: 'María González', email: 'maria.gonzalez@email.com', phone: '+56 9 8765 4321', orders: 15, totalSpent: 187500, registered: '2024-01-15' },
+            { id: 2, name: 'Juan Pérez', email: 'juan.perez@email.com', phone: '+56 9 7654 3210', orders: 8, totalSpent: 95600, registered: '2024-02-20' },
+            { id: 3, name: 'Ana Morales', email: 'ana.morales@email.com', phone: '+56 9 6543 2109', orders: 22, totalSpent: 298750, registered: '2024-01-08' },
+            { id: 4, name: 'Carlos López', email: 'carlos.lopez@email.com', phone: '+56 9 5432 1098', orders: 5, totalSpent: 67890, registered: '2024-03-10' },
+            { id: 5, name: 'Sofía Castro', email: 'sofia.castro@email.com', phone: '+56 9 4321 0987', orders: 12, totalSpent: 156780, registered: '2024-02-05' }
+        ];
+
+        const mockDelivery = [
+            { name: 'Roberto Silva', status: 'active', currentOrder: '#12565', location: 'Av. Ramón Picarte', deliveries: 8, rating: 4.8 },
+            { name: 'Andrea Núñez', status: 'active', currentOrder: '#12564', location: 'Centro', deliveries: 6, rating: 4.9 },
+            { name: 'Miguel Torres', status: 'break', currentOrder: '-', location: 'Local', deliveries: 5, rating: 4.7 },
+            { name: 'Carla Medina', status: 'active', currentOrder: '#12562', location: 'Las Ánimas', deliveries: 7, rating: 4.6 },
+            { name: 'Diego Vargas', status: 'offline', currentOrder: '-', location: '-', deliveries: 4, rating: 4.5 }
+        ];
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            loadRecentOrders();
+            loadAllOrders();
+            loadCustomers();
+            loadDeliveryData();
+            initializeCharts();
+            updateMetrics();
+            
+            // Setup sidebar toggle
+            setupSidebarToggle();
+        });
+
+        function loadUserData() {
+            const user = JSON.parse(sessionStorage.getItem('cosmofood_user'));
+            if (user) {
+                document.getElementById('adminName').textContent = user.email.split('@')[0];
+            }
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // Update active nav link
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
+        }
+
+        function loadRecentOrders() {
+            const tableBody = document.getElementById('recentOrdersTable');
+            tableBody.innerHTML = '';
+
+            mockOrders.slice(0, 5).forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${order.id}</strong></td>
+                    <td>${order.customer}</td>
+                    <td>${order.products}</td>
+                    <td><strong>${order.total.toLocaleString()}</strong></td>
+                    <td><span class="badge badge-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span></td>
+                    <td>${order.time}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" title="Ver Detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-outline-success" title="Actualizar Estado">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadAllOrders() {
+            const tableBody = document.getElementById('ordersTable');
+            tableBody.innerHTML = '';
+
+            mockOrders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${order.id}</strong></td>
+                    <td>${order.customer}</td>
+                    <td>${order.products}</td>
+                    <td><strong>${order.total.toLocaleString()}</strong></td>
+                    <td><span class="badge ${order.type === 'delivery' ? 'bg-primary' : 'bg-success'}">${order.type === 'delivery' ? 'Delivery' : 'Retiro'}</span></td>
+                    <td><span class="badge badge-status ${getStatusClass(order.status)}">${getStatusText(order.status)}</span></td>
+                    <td>${order.time}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" title="Ver Detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-outline-success" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" title="Cancelar">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadCustomers() {
+            const tableBody = document.getElementById('customersTable');
+            tableBody.innerHTML = '';
+
+            mockCustomers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>#${customer.id}</strong></td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td><span class="badge bg-info">${customer.orders}</span></td>
+                    <td><strong>${customer.totalSpent.toLocaleString()}</strong></td>
+                    <td>${customer.registered}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" title="Ver Perfil">
+                                <i class="fas fa-user"></i>
+                            </button>
+                            <button class="btn btn-outline-success" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-info" title="Historial">
+                                <i class="fas fa-history"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadDeliveryData() {
+            const tableBody = document.getElementById('deliveryTable');
+            tableBody.innerHTML = '';
+
+            mockDelivery.forEach(delivery => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${delivery.name}</strong></td>
+                    <td><span class="badge ${getDeliveryStatusClass(delivery.status)}">${getDeliveryStatusText(delivery.status)}</span></td>
+                    <td>${delivery.currentOrder}</td>
+                    <td>${delivery.location}</td>
+                    <td><span class="badge bg-info">${delivery.deliveries}</span></td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">${delivery.rating}</span>
+                            <div class="text-warning">
+                                ${generateStars(delivery.rating)}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" title="Ver Ubicación">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </button>
+                            <button class="btn btn-outline-success" title="Asignar Pedido">
+                                <i class="fas fa-truck"></i>
+                            </button>
+                            <button class="btn btn-outline-warning" title="Contactar">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                'pending': 'bg-warning text-dark',
+                'preparing': 'bg-info',
+                'ready': 'bg-success',
+                'delivered': 'bg-primary',
+                'cancelled': 'bg-danger'
+            };
+            return classes[status] || 'bg-secondary';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Pendiente',
+                'preparing': 'Preparando',
+                'ready': 'Listo',
+                'delivered': 'Entregado',
+                'cancelled': 'Cancelado'
+            };
+            return texts[status] || 'Desconocido';
+        }
+
+        function getDeliveryStatusClass(status) {
+            const classes = {
+                'active': 'bg-success',
+                'break': 'bg-warning text-dark',
+                'offline': 'bg-secondary'
+            };
+            return classes[status] || 'bg-secondary';
+        }
+
+        function getDeliveryStatusText(status) {
+            const texts = {
+                'active': 'Activo',
+                'break': 'En Descanso',
+                'offline': 'Desconectado'
+            };
+            return texts[status] || 'Desconocido';
+        }
+
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            if (halfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            return stars;
+        }
+
+        function initializeCharts() {
+            // Sales Chart
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                    datasets: [{
+                        label: 'Ventas ($)',
+                        data: [650000, 590000, 800000, 810000, 560000, 950000, 870000],
+                        borderColor: '#ff6b35',
+                        backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return ' + (value / 1000) + 'k';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Popular Products Chart
+            const productsCtx = document.getElementById('popularProductsChart').getContext('2d');
+            new Chart(productsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Big Cosmo Burger', 'Pizza Margherita', 'Pollo Crispy', 'Alitas BBQ', 'Otros'],
+                    datasets: [{
+                        data: [30, 25, 20, 15, 10],
+                        backgroundColor: [
+                            '#ff6b35',
+                            '#f39c12',
+                            '#27ae60',
+                            '#3498db',
+                            '#9b59b6'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateMetrics() {
+            // Simulate real-time updates
+            setInterval(() => {
+                const revenue = document.getElementById('todayRevenue');
+                const orders = document.getElementById('todayOrders');
+                
+                // Random small increases
+                const currentRevenue = parseInt(revenue.textContent.replace(/[^\d]/g, ''));
+                const currentOrders = parseInt(orders.textContent);
+                
+                if (Math.random() > 0.7) { // 30% chance of update
+                    revenue.textContent = ' + (currentRevenue + Math.floor(Math.random() * 15000)).toLocaleString();
+                    orders.textContent = currentOrders + Math.floor(Math.random() * 3);
+                }
+            }, 30000); // Update every 30 seconds
+        }
+
+        function setupSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+                overlay.style.display = sidebar.classList.contains('show') ? 'block' : 'none';
+            });
+
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('show');
+                overlay.style.display = 'none';
+            });
+
+            // Close sidebar when clicking nav links on mobile
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 992) {
+                        sidebar.classList.remove('show');
+                        overlay.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Order status filter
+        document.getElementById('orderStatusFilter').addEventListener('change', function() {
+            const selectedStatus = this.value;
+            const rows = document.querySelectorAll('#ordersTable tr');
+            
+            rows.forEach(row => {
+                if (selectedStatus === 'all') {
+                    row.style.display = '';
+                } else {
+                    const statusBadge = row.querySelector('.badge-status');
+                    if (statusBadge) {
+                        const hasStatus = statusBadge.classList.contains(getStatusClass(selectedStatus));
+                        row.style.display = hasStatus ? '' : 'none';
+                    }
+                }
+            });
+        });
+
+        // Auto-refresh notifications
+        function updateNotifications() {
+            const badge = document.getElementById('notificationBadge');
+            const currentCount = parseInt(badge.textContent);
+            
+            // Simulate new notifications
+            if (Math.random() > 0.8) {
+                badge.textContent = currentCount + 1;
+            }
+        }
+
+        setInterval(updateNotifications, 45000); // Check every 45 seconds
+
+        console.log('%c🏪 Dashboard Admin - Cosmofood', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
+        console.log('%c📊 Sistema de gestión completamente funcional', 'color: #2c3e50; font-size: 14px;');
+        console.log('%c⚡ Actualización en tiempo real activada', 'color: #27ae60; font-size: 12px;');
+    </script>
+</body>
+</html>

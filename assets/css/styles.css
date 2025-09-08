@@ -1,0 +1,111 @@
+
+body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar personalizado */
+.navbar-custom {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+}
+
+.navbar-brand {
+      color: #ff6b35 !important;
+      font-weight: bold;
+      font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+      color: #2c3e50 !important;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+}
+
+.navbar-nav .nav-link:hover {
+      color: #ff6b35 !important;
+      transform: translateY(-1px);
+}
+
+.navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: linear-gradient(45deg, #ff6b35, #f39c12);
+      transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::after {
+      width: 80%;
+}
+
+/* Botón toggler personalizado */
+.navbar-toggler {
+      border: 2px solid #ff6b35;
+      border-radius: 8px;
+      padding: 8px 12px;
+      transition: all 0.3s ease;
+}
+
+.navbar-toggler:hover {
+      background-color: #ff6b35;
+      transform: scale(1.05);
+}
+
+.navbar-toggler:focus {
+      box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+}
+
+.navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23ff6b35' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      width: 24px;
+      height: 24px;
+}
+
+.navbar-toggler:hover .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Animación del menú móvil */
+.navbar-collapse {
+      transition: all 0.3s ease;
+}
+
+@media (max-width: 991.98px) {
+      .navbar-collapse {
+      background: rgba(255, 255, 255, 0.98);
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 107, 53, 0.1);
+      padding: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-nav {
+      gap: 10px;
+      }
+      
+      .navbar-nav .nav-link {
+      padding: 12px 15px !important;
+      border-radius: 8px;
+      background: rgba(255, 107, 53, 0.05);
+      margin: 2px 0;
+      }
+      
+      .navbar-nav .nav-link:hover {
+      background: rgba(255, 107, 53, 0.1);
+      }
+}
+
+/* Debug para ver el botón */
+.debug-toggler {
+      background-color: #ff6b35 !important;
+      color: white !important;
+      visibility: visible !important;
+      display: block !important;
+}

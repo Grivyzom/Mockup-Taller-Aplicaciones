@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos - Cosmofood Admin</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff6b35',
+                        secondary: '#2c3e50',
+                        accent: '#f39c12',
+                        success: '#27ae60',
+                        danger: '#e74c3c'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .product-card {
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            border: none;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .product-image {
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .btn-add-product {
+            background: linear-gradient(45deg, #ff6b35, #f39c12);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-add-product:hover {
+            background: linear-gradient(45deg, #e55a2e, #d68910);
+            transform: translateY(-2px);
+            color: white;
+        }
+        .stats-card {
+            background: linear-gradient(135deg, var(--bg-from), var(--bg-to));
+            color: white;
+            border: none;
+            border-radius: 15px;
+        }
+        .stats-total { --bg-from: #3498db; --bg-to: #2980b9; }
+        .stats-active { --bg-from: #27ae60; --bg-to: #2ecc71; }
+        .stats-low-stock { --bg-from: #f39c12; --bg-to: #e67e22; }
+        .stats-categories { --bg-from: #9b59b6; --bg-to: #8e44ad; }
+        .table-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            color: #ff6b35 !important;
+        }
+        .category-filter {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 25px;
+            padding: 8px 15px;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+        .category-filter.active {
+            background: linear-gradient(45deg, #ff6b35, #f39c12);
+            color: white;
+            border-color: #ff6b35;
+        }
+        .image-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .image-upload-area:hover {
+            border-color: #ff6b35;
+            background-color: rgba(255, 107, 53, 0.05);
+        }
+        .image-upload-area.dragover {
+            border-color: #ff6b35;
+            background-color: rgba(255, 107, 53, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="../../index.html">
+                <i class="fas fa-utensils me-2"></i>Cosmofood
+            </a>
+            
+            <nav aria-label="breadcrumb" class="ms-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Gestión de Productos</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <!-- Search -->
+                <div class="position-relative">
+                    <input type="text" class="form-control" placeholder="Buscar productos..." id="searchInput" style="padding-right: 40px; width: 250px;">
+                    <i class="fas fa-search position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
+                </div>
+
+                <!-- View Toggle -->
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-secondary active" id="gridView">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="listView">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-shield me-1"></i>
+                        <span id="adminName">Admin</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="dashboard.html"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="orders.html"><i class="fas fa-clipboard-list me-2"></i>Pedidos</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="../auth/login.html"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid py-4">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="fw-bold text-dark mb-1">
+                            <i class="fas fa-box text-primary me-2"></i>
+                            Gestión de Productos
+                        </h2>
+                        <p class="text-muted mb-0">Administra el catálogo completo de productos</p>
+                    </div>
+                    <button class="btn btn-add-product btn-lg px-4" data-bs-toggle="modal" data-bs-target="#productModal">
+                        <i class="fas fa-plus me-2"></i>
+                        Nuevo Producto
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card stats-total h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title opacity-75">Total Productos</h6>
+                                <h2 class="mb-0" id="totalProducts">67</h2>
+                                <small class="opacity-75">En catálogo</small>
+                            </div>
+                            <i class="fas fa-box fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card stats-active h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title opacity-75">Activos</h6>
+                                <h2 class="mb-0" id="activeProducts">64</h2>
+                                <small class="opacity-75">Disponibles</small>
+                            </div>
+                            <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card stats-low-stock h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title opacity-75">Stock Bajo</h6>
+                                <h2 class="mb-0" id="lowStockProducts">8</h2>
+                                <small class="opacity-75">Requieren atención</small>
+                            </div>
+                            <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card stats-card stats-categories h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title opacity-75">Categorías</h6>
+                                <h2 class="mb-0" id="totalCategories">6</h2>
+                                <small class="opacity-75">Diferentes tipos</small>
+                            </div>
+                            <i class="fas fa-tags fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card table-card">
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap align-items-center gap-3">
+                            <h6 class="mb-0 me-3">Filtrar por:</h6>
+                            
+                            <!-- Category Filters -->
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn category-filter active" data-category="all">
+                                    <i class="fas fa-th me-1"></i>Todos
+                                </button>
+                                <button class="btn category-filter" data-category="hamburgers">
+                                    <i class="fas fa-hamburger me-1"></i>Hamburguesas
+                                </button>
+                                <button class="btn category-filter" data-category="pizza">
+                                    <i class="fas fa-pizza-slice me-1"></i>Pizzas
+                                </button>
+                                <button class="btn category-filter" data-category="chicken">
+                                    <i class="fas fa-drumstick-bite me-1"></i>Pollo
+                                </button>
+                                <button class="btn category-filter" data-category="drinks">
+                                    <i class="fas fa-glass-cheers me-1"></i>Bebidas
+                                </button>
+                                <button class="btn category-filter" data-category="desserts">
+                                    <i class="fas fa-ice-cream me-1"></i>Postres
+                                </button>
+                            </div>
+
+                            <!-- Additional Filters -->
+                            <div class="ms-auto d-flex gap-2">
+                                <select class="form-select" id="statusFilter">
+                                    <option value="all">Todos los estados</option>
+                                    <option value="active">Activos</option>
+                                    <option value="inactive">Inactivos</option>
+                                    <option value="low-stock">Stock bajo</option>
+                                </select>
+                                <select class="form-select" id="sortBy">
+                                    <option value="name">Ordenar por nombre</option>
+                                    <option value="price">Ordenar por precio</option>
+                                    <option value="stock">Ordenar por stock</option>
+                                    <option value="category">Ordenar por categoría</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid/List -->
+        <div id="productsGrid" class="row">
+            <!-- Products will be loaded here -->
+        </div>
+
+        <!-- Products Table (List View) -->
+        <div id="productsTable" class="card table-card" style="display: none;">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Table rows will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">
+                        <i class="fas fa-plus-circle text-primary me-2"></i>
+                        <span id="modalTitle">Nuevo Producto</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="productForm" class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <!-- Basic Info -->
+                                <div class="mb-3">
+                                    <label for="productName" class="form-label fw-semibold">Nombre del Producto</label>
+                                    <input type="text" class="form-control" id="productName" placeholder="Ej: Big Cosmo Burger" required>
+                                    <div class="invalid-feedback">El nombre es requerido</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="productDescription" class="form-label fw-semibold">Descripción</label>
+                                    <textarea class="form-control" id="productDescription" rows="3" placeholder="Describe el producto detalladamente..." required></textarea>
+                                    <div class="invalid-feedback">La descripción es requerida</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="productCategory" class="form-label fw-semibold">Categoría</label>
+                                        <select class="form-select" id="productCategory" required>
+                                            <option value="">Seleccionar categoría</option>
+                                            <option value="hamburgers">Hamburguesas</option>
+                                            <option value="pizza">Pizzas</option>
+                                            <option value="chicken">Pollo</option>
+                                            <option value="drinks">Bebidas</option>
+                                            <option value="desserts">Postres</option>
+                                        </select>
+                                        <div class="invalid-feedback">Selecciona una categoría</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="productPrice" class="form-label fw-semibold">Precio ($)</label>
+                                        <input type="number" class="form-control" id="productPrice" placeholder="12990" min="0" step="10" required>
+                                        <div class="invalid-feedback">El precio es requerido</div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="productStock" class="form-label fw-semibold">Stock Inicial</label>
+                                        <input type="number" class="form-control" id="productStock" placeholder="50" min="0" required>
+                                        <div class="invalid-feedback">El stock es requerido</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="minStock" class="form-label fw-semibold">Stock Mínimo</label>
+                                        <input type="number" class="form-control" id="minStock" placeholder="10" min="0" required>
+                                        <div class="invalid-feedback">El stock mínimo es requerido</div>
+                                    </div>
+                                </div>
+
+                                <!-- Status -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Estado</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="productStatus" id="statusActive" value="active" checked>
+                                            <label class="form-check-label" for="statusActive">
+                                                <i class="fas fa-check-circle text-success me-1"></i>Activo
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="productStatus" id="statusInactive" value="inactive">
+                                            <label class="form-check-label" for="statusInactive">
+                                                <i class="fas fa-times-circle text-danger me-1"></i>Inactivo
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Featured -->
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="productFeatured">
+                                        <label class="form-check-label" for="productFeatured">
+                                            <i class="fas fa-star text-warning me-1"></i>
+                                            Producto destacado
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <!-- Image Upload -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Imagen del Producto</label>
+                                    <div class="image-upload-area" id="imageUploadArea">
+                                        <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                        <p class="text-muted mb-2">Arrastra una imagen aquí o</p>
+                                        <button type="button" class="btn btn-outline-primary btn-sm">Seleccionar Archivo</button>
+                                        <input type="file" id="productImage" accept="image/*" style="display: none;">
+                                    </div>
+                                    <div id="imagePreview" class="mt-3" style="display: none;">
+                                        <img id="previewImg" src="" alt="Preview" class="img-fluid rounded">
+                                        <button type="button" class="btn btn-sm btn-outline-danger mt-2 w-100" onclick="removeImage()">
+                                            <i class="fas fa-trash me-1"></i>Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Info -->
+                                <div class="card bg-light border-0">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-info-circle text-primary me-1"></i>
+                                            Información Adicional
+                                        </h6>
+                                        <div class="mb-2">
+                                            <small class="text-muted">Tiempo de preparación (min)</small>
+                                            <input type="number" class="form-control form-control-sm mt-1" id="prepTime" placeholder="15" min="1">
+                                        </div>
+                                        <div class="mb-2">
+                                            <small class="text-muted">Calorías</small>
+                                            <input type="number" class="form-control form-control-sm mt-1" id="calories" placeholder="650" min="0">
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Tags (separados por comas)</small>
+                                            <input type="text" class="form-control form-control-sm mt-1" id="productTags" placeholder="picante, vegano">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-add-product" onclick="saveProduct()">
+                        <i class="fas fa-save me-2"></i>
+                        <span id="saveButtonText">Guardar Producto</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Confirmar Eliminación
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro que deseas eliminar el producto <strong id="deleteProductName"></strong>?</p>
+                    <p class="text-muted small">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                        <i class="fas fa-trash me-2"></i>
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="actionToast" class="toast" role="alert">
+            <div class="toast-header border-0" id="toastHeader">
+                <i class="me-2" id="toastIcon"></i>
+                <strong class="me-auto" id="toastTitle">Notificación</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                Mensaje
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Mock products data
+        let products = [
+            {
+                id: 1,
+                name: "Big Cosmo Burger",
+                description: "Hamburguesa doble con queso, lechuga, tomate y salsa especial",
+                category: "hamburgers",
+                price: 8990,
+                stock: 45,
+                minStock: 10,
+                status: "active",
+                featured: true,
+                image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop",
+                prepTime: 12,
+                calories: 650,
+                tags: ["popular", "proteína"]
+            },
+            {
+                id: 2,
+                name: "Pizza Margherita",
+                description: "Pizza clásica con salsa de tomate, mozzarella y albahaca fresca",
+                category: "pizza",
+                price: 12990,
+                stock: 30,
+                minStock: 5,
+                status: "active",
+                featured: false,
+                image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
+                prepTime: 18,
+                calories: 720,
+                tags: ["vegetariano", "clásico"]
+            },
+            {
+                id: 3,
+                name: "Pollo Crispy",
+                description: "Piezas de pollo crujiente con papas fritas y ensalada",
+                category: "chicken",
+                price: 7990,
+                stock: 8,
+                minStock: 10,
+                status: "active",
+                featured: true,
+                image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop",
+                prepTime: 15,
+                calories: 580,
+                tags: ["crujiente", "proteína"]
+            },
+            {
+                id: 4,
+                name: "Coca Cola 500ml",
+                description: "Refrescante bebida gaseosa",
+                category: "drinks",
+                price: 1500,
+                stock: 120,
+                minStock: 20,
+                status: "active",
+                featured: false,
+                image: "https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=400&h=300&fit=crop",
+                prepTime: 1,
+                calories: 210,
+                tags: ["refrescante", "gaseosa"]
+            },
+            {
+                id: 5,
+                name: "Helado Artesanal",
+                description: "Delicioso helado de vainilla con topping de chocolate",
+                category: "desserts",
+                price: 3990,
+                stock: 25,
+                minStock: 8,
+                status: "active",
+                featured: false,
+                image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop",
+                prepTime: 3,
+                calories: 320,
+                tags: ["postre", "frío"]
+            },
+            {
+                id: 6,
+                name: "Cheese Burger",
+                description: "Hamburguesa con queso cheddar, cebolla caramelizada y pepinillos",
+                category: "hamburgers",
+                price: 6990,
+                stock: 35,
+                minStock: 10,
+                status: "active",
+                featured: false,
+                image: "https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=400&h=300&fit=crop",
+                prepTime: 10,
+                calories: 520,
+                tags: ["queso", "clásico"]
+            },
+            {
+                id: 7,
+                name: "Pizza Pepperoni",
+                description: "Pizza con pepperoni, mozzarella y orégano",
+                category: "pizza",
+                price: 14990,
+                stock: 0,
+                minStock: 5,
+                status: "inactive",
+                featured: false,
+                image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&h=300&fit=crop",
+                prepTime: 20,
+                calories: 780,
+                tags: ["pepperoni", "picante"]
+            },
+            {
+                id: 8,
+                name: "Alitas BBQ",
+                description: "Alitas de pollo bañadas en salsa barbacoa",
+                category: "chicken",
+                price: 9990,
+                stock: 42,
+                minStock: 12,
+                status: "active",
+                featured: true,
+                image: "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&h=300&fit=crop",
+                prepTime: 16,
+                calories: 480,
+                tags: ["bbq", "picante"]
+            }
+        ];
+
+        let currentFilter = 'all';
+        let currentView = 'grid';
+        let editingProductId = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            setupEventListeners();
+            loadProducts();
+            updateStats();
+            setupImageUpload();
+        });
+
+        function loadUserData() {
+            const user = JSON.parse(sessionStorage.getItem('cosmofood_user'));
+            if (user) {
+                document.getElementById('adminName').textContent = user.email.split('@')[0];
+            }
+        }
+
+        function setupEventListeners() {
+            // Category filters
+            document.querySelectorAll('.category-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.getAttribute('data-category');
+                    loadProducts();
+                });
+            });
+
+            // View toggle
+            document.getElementById('gridView').addEventListener('click', function() {
+                currentView = 'grid';
+                document.getElementById('listView').classList.remove('active');
+                this.classList.add('active');
+                loadProducts();
+            });
+
+            document.getElementById('listView').addEventListener('click', function() {
+                currentView = 'list';
+                document.getElementById('gridView').classList.remove('active');
+                this.classList.add('active');
+                loadProducts();
+            });
+
+            // Search
+            document.getElementById('searchInput').addEventListener('input', function() {
+                filterProducts(this.value);
+            });
+
+            // Status filter
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                loadProducts();
+            });
+
+            // Sort
+            document.getElementById('sortBy').addEventListener('change', function() {
+                loadProducts();
+            });
+        }
+
+        function loadProducts() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+            
+            let filteredProducts = products.filter(product => {
+                let matchesCategory = currentFilter === 'all' || product.category === currentFilter;
+                let matchesStatus = statusFilter === 'all' || 
+                    (statusFilter === 'active' && product.status === 'active') ||
+                    (statusFilter === 'inactive' && product.status === 'inactive') ||
+                    (statusFilter === 'low-stock' && product.stock <= product.minStock);
+                
+                return matchesCategory && matchesStatus;
+            });
+
+            // Sort products
+            filteredProducts.sort((a, b) => {
+                switch(sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'price':
+                        return a.price - b.price;
+                    case 'stock':
+                        return b.stock - a.stock;
+                    case 'category':
+                        return a.category.localeCompare(b.category);
+                    default:
+                        return 0;
+                }
+            });
+
+            if (currentView === 'grid') {
+                renderProductsGrid(filteredProducts);
+            } else {
+                renderProductsList(filteredProducts);
+            }
+        }
+
+        function renderProductsGrid(products) {
+            const gridContainer = document.getElementById('productsGrid');
+            const tableContainer = document.getElementById('productsTable');
+            
+            gridContainer.style.display = 'flex';
+            tableContainer.style.display = 'none';
+            gridContainer.innerHTML = '';
+
+            if (products.length === 0) {
+                gridContainer.innerHTML = `
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No hay productos que mostrar</h4>
+                            <p class="text-muted">Intenta cambiar los filtros o agregar nuevos productos</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            products.forEach(product => {
+                const col = document.createElement('div');
+                col.className = 'col-lg-3 col-md-4 col-sm-6 mb-4';
+                
+                const stockClass = product.stock <= product.minStock ? 'text-warning' : 'text-success';
+                const statusBadge = product.status === 'active' 
+                    ? '<span class="badge bg-success">Activo</span>'
+                    : '<span class="badge bg-danger">Inactivo</span>';
+                
+                const featuredBadge = product.featured 
+                    ? '<span class="badge bg-warning position-absolute top-0 start-0 m-2">⭐ Destacado</span>'
+                    : '';
+
+                col.innerHTML = `
+                    <div class="card product-card h-100 shadow-sm">
+                        <div class="position-relative">
+                            <img src="${product.image}" class="card-img-top product-image" alt="${product.name}">
+                            ${featuredBadge}
+                            ${statusBadge}
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${product.name}</h5>
+                            <p class="card-text text-muted small flex-grow-1">${product.description}</p>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <strong class="text-primary">${product.price.toLocaleString()}</strong>
+                                    <span class="badge bg-secondary">${getCategoryName(product.category)}</span>
+                                </div>
+                                <small class="${stockClass}">
+                                    <i class="fas fa-box me-1"></i>
+                                    Stock: ${product.stock} unidades
+                                </small>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <div class="btn-group">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="editProduct(${product.id})" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-success btn-sm" onclick="toggleStatus(${product.id})" title="Cambiar Estado">
+                                        <i class="fas fa-toggle-${product.status === 'active' ? 'on' : 'off'}"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info btn-sm" onclick="duplicateProduct(${product.id})" title="Duplicar">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteProduct(${product.id})" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                gridContainer.appendChild(col);
+            });
+        }
+
+        function renderProductsList(products) {
+            const gridContainer = document.getElementById('productsGrid');
+            const tableContainer = document.getElementById('productsTable');
+            const tableBody = document.getElementById('productsTableBody');
+            
+            gridContainer.style.display = 'none';
+            tableContainer.style.display = 'block';
+            tableBody.innerHTML = '';
+
+            if (products.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            <i class="fas fa-box-open fa-2x text-muted mb-2 d-block"></i>
+                            <span class="text-muted">No hay productos que mostrar</span>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                const stockClass = product.stock <= product.minStock ? 'text-warning' : 'text-success';
+                const statusBadge = product.status === 'active' 
+                    ? '<span class="badge bg-success">Activo</span>'
+                    : '<span class="badge bg-danger">Inactivo</span>';
+
+                row.innerHTML = `
+                    <td>
+                        <img src="${product.image}" alt="${product.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                    </td>
+                    <td>
+                        <div>
+                            <strong>${product.name}</strong>
+                            ${product.featured ? '<i class="fas fa-star text-warning ms-1" title="Destacado"></i>' : ''}
+                            <div class="text-muted small">${product.description.substring(0, 50)}...</div>
+                        </div>
+                    </td>
+                    <td><span class="badge bg-secondary">${getCategoryName(product.category)}</span></td>
+                    <td><strong>${product.price.toLocaleString()}</strong></td>
+                    <td><span class="${stockClass}">${product.stock}</span></td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="editProduct(${product.id})" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-success" onclick="toggleStatus(${product.id})" title="Cambiar Estado">
+                                <i class="fas fa-toggle-${product.status === 'active' ? 'on' : 'off'}"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="deleteProduct(${product.id})" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function getCategoryName(category) {
+            const categories = {
+                'hamburgers': 'Hamburguesas',
+                'pizza': 'Pizzas',
+                'chicken': 'Pollo',
+                'drinks': 'Bebidas',
+                'desserts': 'Postres'
+            };
+            return categories[category] || category;
+        }
+
+        function filterProducts(query) {
+            const cards = document.querySelectorAll('.product-card');
+            const rows = document.querySelectorAll('#productsTableBody tr');
+            
+            const elements = currentView === 'grid' ? cards : rows;
+            
+            elements.forEach(element => {
+                const text = element.textContent.toLowerCase();
+                if (text.includes(query.toLowerCase())) {
+                    element.closest(currentView === 'grid' ? '.col-lg-3' : 'tr').style.display = '';
+                } else {
+                    element.closest(currentView === 'grid' ? '.col-lg-3' : 'tr').style.display = 'none';
+                }
+            });
+        }
+
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            editingProductId = id;
+            
+            // Fill form with product data
+            document.getElementById('modalTitle').textContent = 'Editar Producto';
+            document.getElementById('saveButtonText').textContent = 'Actualizar Producto';
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productDescription').value = product.description;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productStock').value = product.stock;
+            document.getElementById('minStock').value = product.minStock;
+            document.getElementById('prepTime').value = product.prepTime || '';
+            document.getElementById('calories').value = product.calories || '';
+            document.getElementById('productTags').value = product.tags ? product.tags.join(', ') : '';
+            document.getElementById('productFeatured').checked = product.featured;
+            
+            // Set status
+            if (product.status === 'active') {
+                document.getElementById('statusActive').checked = true;
+            } else {
+                document.getElementById('statusInactive').checked = true;
+            }
+            
+            // Show image preview
+            if (product.image) {
+                document.getElementById('previewImg').src = product.image;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('imageUploadArea').style.display = 'none';
+            }
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('productModal'));
+            modal.show();
+        }
+
+        function duplicateProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            const newProduct = {
+                ...product,
+                id: Math.max(...products.map(p => p.id)) + 1,
+                name: product.name + ' (Copia)',
+                stock: 0
+            };
+
+            products.push(newProduct);
+            loadProducts();
+            updateStats();
+            showToast('success', 'Producto duplicado', `${newProduct.name} ha sido creado`);
+        }
+
+        function toggleStatus(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            product.status = product.status === 'active' ? 'inactive' : 'active';
+            loadProducts();
+            updateStats();
+            
+            const statusText = product.status === 'active' ? 'activado' : 'desactivado';
+            showToast('success', 'Estado actualizado', `${product.name} ha sido ${statusText}`);
+        }
+
+        function deleteProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('deleteProductName').textContent = product.name;
+            
+            // Store the ID for confirmation
+            window.productToDelete = id;
+            
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+        }
+
+        function confirmDelete() {
+            const id = window.productToDelete;
+            const productIndex = products.findIndex(p => p.id === id);
+            
+            if (productIndex !== -1) {
+                const productName = products[productIndex].name;
+                products.splice(productIndex, 1);
+                loadProducts();
+                updateStats();
+                showToast('success', 'Producto eliminado', `${productName} ha sido eliminado`);
+            }
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+            modal.hide();
+        }
+
+        function saveProduct() {
+            const form = document.getElementById('productForm');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const productData = {
+                name: document.getElementById('productName').value,
+                description: document.getElementById('productDescription').value,
+                category: document.getElementById('productCategory').value,
+                price: parseInt(document.getElementById('productPrice').value),
+                stock: parseInt(document.getElementById('productStock').value),
+                minStock: parseInt(document.getElementById('minStock').value),
+                status: document.querySelector('input[name="productStatus"]:checked').value,
+                featured: document.getElementById('productFeatured').checked,
+                prepTime: parseInt(document.getElementById('prepTime').value) || 0,
+                calories: parseInt(document.getElementById('calories').value) || 0,
+                tags: document.getElementById('productTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                image: document.getElementById('previewImg').src || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'
+            };
+
+            if (editingProductId) {
+                // Update existing product
+                const productIndex = products.findIndex(p => p.id === editingProductId);
+                if (productIndex !== -1) {
+                    products[productIndex] = { ...products[productIndex], ...productData };
+                    showToast('success', 'Producto actualizado', `${productData.name} ha sido actualizado`);
+                }
+            } else {
+                // Create new product
+                const newProduct = {
+                    id: Math.max(...products.map(p => p.id)) + 1,
+                    ...productData
+                };
+                products.push(newProduct);
+                showToast('success', 'Producto creado', `${productData.name} ha sido agregado al catálogo`);
+            }
+
+            // Reset form and close modal
+            resetProductForm();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+            modal.hide();
+            
+            loadProducts();
+            updateStats();
+        }
+
+        function resetProductForm() {
+            document.getElementById('productForm').reset();
+            document.getElementById('productForm').classList.remove('was-validated');
+            document.getElementById('modalTitle').textContent = 'Nuevo Producto';
+            document.getElementById('saveButtonText').textContent = 'Guardar Producto';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageUploadArea').style.display = 'block';
+            editingProductId = null;
+        }
+
+        function setupImageUpload() {
+            const uploadArea = document.getElementById('imageUploadArea');
+            const fileInput = document.getElementById('productImage');
+            
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('previewImg').src = e.target.result;
+                        document.getElementById('imagePreview').style.display = 'block';
+                        document.getElementById('imageUploadArea').style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            document.getElementById('previewImg').src = e.target.result;
+                            document.getElementById('imagePreview').style.display = 'block';
+                            document.getElementById('imageUploadArea').style.display = 'none';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+        }
+
+        function removeImage() {
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageUploadArea').style.display = 'block';
+            document.getElementById('productImage').value = '';
+        }
+
+        function updateStats() {
+            const totalProducts = products.length;
+            const activeProducts = products.filter(p => p.status === 'active').length;
+            const lowStockProducts = products.filter(p => p.stock <= p.minStock).length;
+            const categories = [...new Set(products.map(p => p.category))].length;
+
+            document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('activeProducts').textContent = activeProducts;
+            document.getElementById('lowStockProducts').textContent = lowStockProducts;
+            document.getElementById('totalCategories').textContent = categories;
+        }
+
+        function showToast(type, title, message) {
+            const toastEl = document.getElementById('actionToast');
+            const headerEl = document.getElementById('toastHeader');
+            const iconEl = document.getElementById('toastIcon');
+            const titleEl = document.getElementById('toastTitle');
+            const messageEl = document.getElementById('toastMessage');
+            
+            // Reset classes
+            headerEl.className = 'toast-header border-0';
+            iconEl.className = 'me-2';
+            
+            // Set type-specific styling
+            switch(type) {
+                case 'success':
+                    headerEl.classList.add('bg-success', 'text-white');
+                    iconEl.classList.add('fas', 'fa-check-circle');
+                    break;
+                case 'error':
+                    headerEl.classList.add('bg-danger', 'text-white');
+                    iconEl.classList.add('fas', 'fa-exclamation-circle');
+                    break;
+                case 'warning':
+                    headerEl.classList.add('bg-warning', 'text-dark');
+                    iconEl.classList.add('fas', 'fa-exclamation-triangle');
+                    break;
+                case 'info':
+                    headerEl.classList.add('bg-info', 'text-white');
+                    iconEl.classList.add('fas', 'fa-info-circle');
+                    break;
+            }
+            
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+
+        // Reset form when modal is hidden
+        document.getElementById('productModal').addEventListener('hidden.bs.modal', function() {
+            resetProductForm();
+        });
+
+        console.log('%c📦 Gestión de Productos - Cosmofood', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
+        console.log('Productos cargados:', products.length);
+        console.log('Vista actual:', currentView);
+    </script>
+</body>
+</html>
